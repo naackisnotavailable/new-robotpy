@@ -43,7 +43,9 @@ def moveDist(x):
 def gyroCalc(gyro_roll):
         pass
 def getConeSpeed(weighted_average):
-        
+        #model import
+
+
         if weighted_average <= 180:
             if weighted_average >= 80:
                 return 0.3
