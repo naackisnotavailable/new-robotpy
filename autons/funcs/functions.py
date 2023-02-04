@@ -64,5 +64,6 @@ def getConeSpeed(weighted_average):
                 return -0.05
             elif weighted_average >= 350:
                 return -0.0
-def xDeg(gyro_angle, deg):
-        pass
+def drive(stick, drive):
+    drive.curvatureDrive(stick.getLeftX(), stick.getLeftY(), True)
+    drive.curvatureDrive(stick.getLeftX(), stick.getLeftY(), True)

@@ -9,11 +9,10 @@ import time
 from navx import AHRS as ahrs
 
 #from cscore import CameraServer
-from funcs import functions as functions
-import funcs.autoBalance as balancePID
-import funcs.spinPID as spinPID
 
-
+from funcs import spinPID
+from funcs import autoBalance as balancePID
+from funcs import functions
 
 
 class Robot(wpilib.TimedRobot):
@@ -37,8 +36,8 @@ class Robot(wpilib.TimedRobot):
         self.myDrive = wpilib.drive.DifferentialDrive(self.leftMotors, self.rightMotors)
         self.stick = wpilib.XboxController(0) # its something 0-5 lol
 
-        self.spinPID = spinPID.PID()
-        self.balancePID = balancePID.PID()
+        self.spinPID = spinPID()
+        self.balancePID = balancePID()
 
     def teleopPeriodic(self):
         functions.drive(self.stick, self.myDrive)

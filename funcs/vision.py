@@ -13,7 +13,7 @@ def main(camera):
     cvSink = CameraServer.getVideo()
 
     # (optional) Setup a CvSource. This will send images back to the Dashboard
-    outputStream = CameraServer.putVideo("Name", 320, 240)
+    outputStream = CameraServer.putVideo("Cam1", 320, 240)
 
     # Allocating new images is very expensive, always try to preallocate
     img = np.zeros(shape=(240, 320, 3), dtype=np.uint8)
