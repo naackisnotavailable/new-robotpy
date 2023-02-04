@@ -42,8 +42,6 @@ class Robot(wpilib.TimedRobot):
 
     def teleopPeriodic(self):
         functions.drive(self.stick, self.myDrive)
-        #if self.stick.getAButton() == True:
-        #    self.leftTalon1.set(ctre._ctre.ControlMode.Position, 0.5)
         self.angle = self.gyro.getAngle()
         self.roll = self.gyro.getRoll()
 
