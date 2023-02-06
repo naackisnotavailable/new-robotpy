@@ -1,10 +1,10 @@
 import time
 import ctre
-
 class PID(object):
     def __init__(self):
         self.inte_last = 0
         self.err_last = 0
+        
     def main(self, gyro_roll, left_motors, right_motors):
         Kp = 0.015  #tuning
         Ki = 0.0  #tuning
