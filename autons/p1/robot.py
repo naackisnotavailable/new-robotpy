@@ -5,12 +5,11 @@ import wpilib.interfaces
 import time
 from ntcore import _ntcore
 from wpimath import controller as control
-from wpimath import geometry as geo
-from wpimath import trajectory as traj
-import wpimath
-from wpimath import kinematics as kine
 from navx import AHRS as ahrs
 import math
+from funcs import __init__ as initialize
+from wpimath import geometry as geo
+
 class Robot(wpilib.TimedRobot):
     def robotInit(self):
         self.leftTalon1 = ctre.WPI_TalonFX(5)
@@ -22,6 +21,7 @@ class Robot(wpilib.TimedRobot):
         self.rightTalon1.configFactoryDefault()
         self.rightTalon2.configFactoryDefault()
 
+        (self.left, self.right, self.gyro, self.spinPID, self.balancePID, self.stick, self.drive, self.tableMotor, self.inst) = initialize()
         self.left = wpilib.MotorControllerGroup(self.leftTalon1, self.leftTalon2)
         self.right = wpilib.MotorControllerGroup(self.rightTalon1, self.rightTalon2)
 
@@ -30,23 +30,6 @@ class Robot(wpilib.TimedRobot):
         self.allMotors = (self.leftTalon1, self.leftTalon2, self.rightTalon1, self.rightTalon2)
 
         self.gyro = ahrs.create_spi()
-
-        #init controller && kinematics object
-        self.ramsete = control.RamseteController()
-        self.kinematic = kine.DifferentialDriveKinematics(0.544)
-
-        #create the trajectory
-        self.inst = _ntcore.NetworkTableInstance.getDefault()
-        self.pose = None
-        start = geo.Pose2d((0.0), (0.0), geo.Rotation2d.fromDegrees(0.0))
-
-        end = geo.Pose2d((1.0), (0.0), geo.Rotation2d.fromDegrees(0.0))
-
-        interior_waypoints = []
-        interior_waypoints.append(geo.Translation2d((0.5), (0.0)))
-        interior_waypoints.append(geo.Translation2d((0.75), (0.0)))
-        config = traj.TrajectoryConfig(0.4, 2)
-        self.trajectory1 = traj.TrajectoryGenerator.generateTrajectory(start, interior_waypoints, end, config)
 
         #timer
         self.timer = wpilib.Timer()
