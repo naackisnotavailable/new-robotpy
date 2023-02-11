@@ -5,7 +5,6 @@ import wpilib.drive
 from funcs import autoBalance as balance
 from funcs import spinPID as spin
 import rev
-import ntcore
 
 def __init__():
     leftTalon1 = ctre.WPI_TalonFX(5)
@@ -25,5 +24,4 @@ def __init__():
     myDrive = wpilib.drive.DifferentialDrive(leftMotors, rightMotors)
     myDrive.setDeadband(0.03)
     tableMotor = rev.CANSparkMax(14, rev.CANSparkMax.MotorType.kBrushless)
-    ntinst = ntcore._ntcore.NetworkTableInstance.getDefault()
-    return (leftMotors, rightMotors, gyro, spinPID, balancePID, stick, myDrive, tableMotor, ntinst)
+    return (leftMotors, rightMotors, gyro, spinPID, balancePID, stick, myDrive, tableMotor)

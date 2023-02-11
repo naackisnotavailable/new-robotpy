@@ -18,12 +18,12 @@ class Robot(wpilib.TimedRobot):
     def robotInit(self):
         #self.camera = CameraServer.startAutomaticCapture()
         #self.camera.setResolution(320, 240)
-        (self.leftMotors, self.rightMotors, self.gyro, self.spinPID, self.balancePID, self.stick, self.myDrive, self.tableMotor) = initialize()
-        self.inst = ntcore._ntcore.NetworkTableInstance.getDefault()
+        (self.leftMotors, self.rightMotors, self.gyro, self.spinPID, self.balancePID, self.stick, self.myDrive, self.tableMotor, self.ntinst) = initialize()
     def teleopPeriodic(self):
         functions.drive(self.stick, self.myDrive)
         functions.balanceCheck(self.stick, self.gyro, self.leftMotors, self.rightMotors, self.balancePID, self.spinPID)
-        print(str(self.inst.getTable("limelight").getEntry("botpose").getDoubleArray([6])))
+        functions.table(self.stick, self.tableMotor)
+        #self.currentPose = functions.getPose(self.ntinst)
 
 
 if __name__ == "__main__":
