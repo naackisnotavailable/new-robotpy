@@ -5,15 +5,15 @@ def drive(stick, drive):
     drive.curvatureDrive(stick.getLeftX(), stick.getLeftY(), True)
     drive.curvatureDrive(stick.getLeftX(), stick.getLeftY(), True)
 def balanceCheck(stick, gyro, leftMotors, rightMotors, balancePID, spinPID):
-    if stick.getBButtonPressed() == True:
-            while True:
-                if 1 == 2:
-                    spinPID.main(gyro.getAngle(), leftMotors, rightMotors)
-                if 2 == 1:
-                    balancePID.main(gyro.getRoll(), leftMotors, rightMotors)
-                if stick.getYButtonPressed() == True:
-                    break
+    if stick.getAButtonPressed() == True:
+            if gyro.getAngle() >= 15:
+                spinPID.main(gyro.getAngle(), leftMotors, rightMotors)
+            else:
+                balancePID.main(gyro.getRoll(), leftMotors, rightMotors)
 def getPose(inst):
     return inst.getTable("limelight").getEntry("botpose").getDoubleArray([6])
 def table(stick, table):
-    table.set(stick.getRightX())
+    if stick.getRightX() > 0.05:
+        table.set(stick.getRightX())
+    else:
+        table.set(0.0)

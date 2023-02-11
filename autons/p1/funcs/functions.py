@@ -7,10 +7,11 @@ def drive(stick, drive):
 def balanceCheck(stick, gyro, leftMotors, rightMotors, balancePID, spinPID):
     if stick.getBButtonPressed() == True:
             while True:
-                if 1 == 2:
+                if gyro.getAngle() >= 15:
                     spinPID.main(gyro.getAngle(), leftMotors, rightMotors)
-                if 2 == 1:
+                else:
                     balancePID.main(gyro.getRoll(), leftMotors, rightMotors)
+                    
                 if stick.getYButtonPressed() == True:
                     break
 def getPose(inst):

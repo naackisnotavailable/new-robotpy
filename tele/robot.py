@@ -20,9 +20,10 @@ class Robot(wpilib.TimedRobot):
         #self.camera.setResolution(320, 240)
         (self.leftMotors, self.rightMotors, self.gyro, self.spinPID, self.balancePID, self.stick, self.myDrive, self.tableMotor, self.ntinst) = initialize()
     def teleopPeriodic(self):
+                # NEED TO UPDATE MOTOR ID
         functions.drive(self.stick, self.myDrive)
         functions.balanceCheck(self.stick, self.gyro, self.leftMotors, self.rightMotors, self.balancePID, self.spinPID)
-        functions.table(self.stick, self.tableMotor)
+        #functions.table(self.stick, self.tableMotor)
         #self.currentPose = functions.getPose(self.ntinst)
 
 

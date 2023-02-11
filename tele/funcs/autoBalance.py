@@ -7,8 +7,8 @@ class PID(object):
         
     def main(self, gyro_roll, left_motors, right_motors):
         Kp = 0.015  #tuning
-        Ki = 0.0  #tuning
-        Kd = 0.0 #tuning
+        Ki = 0.01  #tuning
+        Kd = 0.005 #tuning
 
         Sp = 0
 

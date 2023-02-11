@@ -9,47 +9,49 @@ from navx import AHRS as ahrs
 import math
 from funcs import __init__ as initialize
 from wpimath import geometry as geo
-
+from wpimath import kinematics as kine
+from wpimath import units as units
 class Robot(wpilib.TimedRobot):
     def robotInit(self):
-        self.leftTalon1 = ctre.WPI_TalonFX(5)
-        self.leftTalon2 = ctre.WPI_TalonFX(6)
-        self.rightTalon1 = ctre.WPI_TalonFX(7)
-        self.rightTalon2 = ctre.WPI_TalonFX(8)
-        self.leftTalon1.configFactoryDefault()
-        self.leftTalon2.configFactoryDefault()
-        self.rightTalon1.configFactoryDefault()
-        self.rightTalon2.configFactoryDefault()
-
-        (self.left, self.right, self.gyro, self.spinPID, self.balancePID, self.stick, self.drive, self.tableMotor, self.inst) = initialize()
-        self.left = wpilib.MotorControllerGroup(self.leftTalon1, self.leftTalon2)
-        self.right = wpilib.MotorControllerGroup(self.rightTalon1, self.rightTalon2)
-
+                # NEED TO UPDATE MOTOR ID
+        (self.left, self.right, self.gyro, self.spinPID, self.balancePID, self.stick, self.drive, self.tableMotor, self.inst, self.ramsete, self.trajectory1, self.time, self.kinematic) = initialize()
+        self.kinematic = kine.DifferentialDriveKinematics(4)
         self.drive = wpilib.drive.DifferentialDrive(self.left, self.right)
 
-        self.allMotors = (self.leftTalon1, self.leftTalon2, self.rightTalon1, self.rightTalon2)
-
         self.gyro = ahrs.create_spi()
-
-        #timer
-        self.timer = wpilib.Timer()
-        self.timer.reset()
+        self.time.reset()
     def autonomousInit(self):
-        self.timer.reset()
-        self.timer.start()
+        self.time.reset()
+        self.time.start()
     def autonomousPeriodic(self):
-        t = self.timer.get()
-
+        t = self.time.get()
+        print('t: '+ str(t))
         self.pose = self.inst.getTable("limelight").getEntry("botpose").getDoubleArray([6])
-
+        print('limepose: ' + str(self.pose))
         try:
             self.pose2 = geo.Pose2d(self.pose[0], self.pose[1], self.pose[2])
             self.desiredPose = self.trajectory1.sample(t)
+            print('desPose: ' + str(self.desiredPose))
             self.output = self.ramsete.calculate(self.pose2, self.desiredPose)
+            print('out: ' + str(self.output))
             self.wheelSpeeds = self.kinematic.toWheelSpeeds(self.output)
-            self.wheelSpeeds.desaturate(0.8)
-            self.drive.WheelSpeeds.left(self.wheelSpeeds.left)
-            self.drive.WheelSpeeds.right(self.wheelSpeeds.right)
+            self.wheelSpeeds.desaturate(0.5)
+            print('wheelSpeeds: ' + str(self.wheelSpeeds))
+            #self.wheelString = str(self.wheelSpeeds).removeprefix('DifferentialDriveWheelSpeeds(left=').removesuffix(')')
+            #self.wheelList = self.wheelString.split(', ')
+            #self.leftString = self.wheelList[0]
+            #self.rightString = self.wheelList[1].removeprefix('right=')
+            #print('\nleft: ' + self.leftString)
+            #print('\nright: ' + self.rightString)
+            #self.leftSpeed = float(self.leftString)
+            #self.rightSpeed = float(self.rightString)
+            #self.drive.WheelSpeeds.left(self.leftSpeed)
+            #self.drive.WheelSpeeds.right(self.rightSpeed)
+            self.left.set(self.wheelSpeeds.left)
+            self.right.set(self.wheelSpeeds.right)
+           # print('leftspeed: ' + str(units.feetToMeters(self.wheelSpeeds.left_fps)))
+           # print('rightspeed: ' + str(units.feetToMeters(self.wheelSpeeds.right_fps)))
+
         except IndexError as e:
             print('uh oh spaghettio')
         

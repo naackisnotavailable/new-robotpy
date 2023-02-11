@@ -33,19 +33,21 @@ def __init__():
 
     #init controller && kinematics object
     ramsete = control.RamseteController()
-    kinematic = kine.DifferentialDriveKinematics(0.544)
+    kinematic = kine.DifferentialDriveKinematics(0.5334)
 
     #create the trajectory
     inst = _ntcore.NetworkTableInstance.getDefault()
-    start = geo.Pose2d((0.0), (0.0), geo.Rotation2d.fromDegrees(0.0))
-    end = geo.Pose2d((1.0), (0.0), geo.Rotation2d.fromDegrees(0.0))
+    start = geo.Pose2d((4.0), (2.0), geo.Rotation2d.fromDegrees(0.0))
+    end = geo.Pose2d((4.0), (1.0), geo.Rotation2d.fromDegrees(0.0))
     interior_waypoints = []
-    interior_waypoints.append(geo.Translation2d((0.5), (0.0)))
-    interior_waypoints.append(geo.Translation2d((0.75), (0.0)))
+    interior_waypoints.append(geo.Translation2d((4.0), (2.66)))
+    interior_waypoints.append(geo.Translation2d((4.0), (2.33)))
     config = traj.TrajectoryConfig(0.4, 2)
     trajectory1 = traj.TrajectoryGenerator.generateTrajectory(start, interior_waypoints, end, config)
 
-    return (leftMotors, rightMotors, gyro, spinPID, balancePID, stick, myDrive, tableMotor, inst)
+    timer = wpilib.Timer()
+    timer.reset()
+    return (leftMotors, rightMotors, gyro, spinPID, balancePID, stick, myDrive, tableMotor, inst, ramsete, trajectory1, timer, kinematic)
 
 def init_traj():
     pass
