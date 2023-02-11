@@ -12,24 +12,8 @@ from wpimath import geometry as geo
 
 class Robot(wpilib.TimedRobot):
     def robotInit(self):
-        self.leftTalon1 = ctre.WPI_TalonFX(5)
-        self.leftTalon2 = ctre.WPI_TalonFX(6)
-        self.rightTalon1 = ctre.WPI_TalonFX(7)
-        self.rightTalon2 = ctre.WPI_TalonFX(8)
-        self.leftTalon1.configFactoryDefault()
-        self.leftTalon2.configFactoryDefault()
-        self.rightTalon1.configFactoryDefault()
-        self.rightTalon2.configFactoryDefault()
 
         (self.left, self.right, self.gyro, self.spinPID, self.balancePID, self.stick, self.drive, self.tableMotor, self.inst) = initialize()
-        self.left = wpilib.MotorControllerGroup(self.leftTalon1, self.leftTalon2)
-        self.right = wpilib.MotorControllerGroup(self.rightTalon1, self.rightTalon2)
-
-        self.drive = wpilib.drive.DifferentialDrive(self.left, self.right)
-
-        self.allMotors = (self.leftTalon1, self.leftTalon2, self.rightTalon1, self.rightTalon2)
-
-        self.gyro = ahrs.create_spi()
 
         #timer
         self.timer = wpilib.Timer()
