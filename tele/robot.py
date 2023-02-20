@@ -18,14 +18,13 @@ class Robot(wpilib.TimedRobot):
     def robotInit(self):
         #self.camera = CameraServer.startAutomaticCapture()
         #self.camera.setResolution(320, 240)
-        (self.leftMotors, self.rightMotors, self.gyro, self.spinPID, self.balancePID, self.stick, self.myDrive, self.tableMotor, self.ntinst) = initialize()
+        (self.leftMotors, self.rightMotors, self.gyro, self.spinPID, self.balancePID, self.exPID, self.stick, self.stick2, self.myDrive, self.tableMotor, self.bottomIn, self.topIn, self.io, self.ioEncoder, self.ntinst) = initialize()
     def teleopPeriodic(self):
-                # NEED TO UPDATE MOTOR ID
         functions.drive(self.stick, self.myDrive)
         functions.balanceCheck(self.stick, self.gyro, self.leftMotors, self.rightMotors, self.balancePID, self.spinPID)
-        #functions.table(self.stick, self.tableMotor)
-        #self.currentPose = functions.getPose(self.ntinst)
-
+        functions.table(self.stick2, self.tableMotor)
+        functions.intake(self.stick2, self.bottomIn, self.topIn, self.io)
+        functions.testEncoders(self.io, self.ioEncoder, self.exPID)
 
 if __name__ == "__main__":
     wpilib.run(Robot)

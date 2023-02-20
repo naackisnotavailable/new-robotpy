@@ -7,15 +7,20 @@ from ntcore import _ntcore
 import wpilib.interfaces
 import time
 from navx import AHRS as ahrs
+import exPID
 
 
 class Robot(wpilib.TimedRobot):
     def robotInit(self):
         self.io = rev.CANSparkMax(3, rev.CANSparkMax.MotorType.kBrushless)
+        self.ioEncoder = self.io.getEncoder()
+        self.pc = exPID.PID()
 
     def teleopPeriodic(self):
-        self.io.set(0.5)
-
+        out = self.pc.main(self.ioEncoder)
+        print('out: ' + str(out))
+        self.io.set(out)
+        print('current pos: ' + str(self.ioEncoder.getPosition()))
 
         
 

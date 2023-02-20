@@ -15,8 +15,7 @@ class Robot(wpilib.TimedRobot):
     def robotInit(self):
                 # NEED TO UPDATE MOTOR ID
         (self.left, self.right, self.gyro, self.spinPID, self.balancePID, self.stick, self.drive, self.tableMotor, self.inst, self.ramsete, self.trajectory1, self.time, self.kinematic) = initialize()
-        self.kinematic = kine.DifferentialDriveKinematics(4)
-        self.drive = wpilib.drive.DifferentialDrive(self.left, self.right)
+
 
         self.gyro = ahrs.create_spi()
         self.time.reset()
@@ -37,8 +36,8 @@ class Robot(wpilib.TimedRobot):
             self.wheelSpeeds = self.kinematic.toWheelSpeeds(self.output)
             self.wheelSpeeds.desaturate(10.0)
             print('wheelSpeeds: ' + str(self.wheelSpeeds))
-            self.left.set(self.wheelSpeeds.left / 10)
-            self.right.set(self.wheelSpeeds.right / 10)
+            self.left.set(self.wheelSpeeds.left / 20)
+            self.right.set(self.wheelSpeeds.right / 20)
 
         except IndexError as e:
             print('uh oh spaghettio')

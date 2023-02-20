@@ -6,10 +6,9 @@ class PID(object):
         self.err_last = 0
         
     def main(self, gyro_roll, left_motors, right_motors):
-        Kp = 0.015  #tuning
-        Ki = 0.01  #tuning
-        Kd = 0.005 #tuning
-
+        Kp = 0.05  #tuning
+        Ki = 0.0  #tuning
+        Kd = 0.0 #tuning
         Sp = 0
 
         err = Sp - gyro_roll
@@ -19,7 +18,8 @@ class PID(object):
         self.err_last = err
         self.inte_last = inte
 
-        output = (prop + inte + deri)
+        output = (prop + inte + deri) ** 2
+
 
         left_motors.set(output)
         right_motors.set(-output)
