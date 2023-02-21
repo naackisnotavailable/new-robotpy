@@ -24,7 +24,7 @@ class Robot(wpilib.TimedRobot):
         functions.balanceCheck(self.stick, self.gyro, self.leftMotors, self.rightMotors, self.balancePID, self.spinPID)
         functions.table(self.stick2, self.tableMotor)
         functions.intake(self.stick2, self.bottomIn, self.topIn, self.io)
-        functions.testEncoders(self.io, self.ioEncoder, self.exPID)
+        print('ang: ' + str(self.gyro.getAngle()))
 
 if __name__ == "__main__":
     wpilib.run(Robot)

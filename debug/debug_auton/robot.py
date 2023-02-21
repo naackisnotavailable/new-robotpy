@@ -11,10 +11,10 @@ from navx import AHRS as ahrs
 
 class Robot(wpilib.TimedRobot):
     def robotInit(self):
-        self.io = rev.CANSparkMax(3, rev.CANSparkMax.MotorType.kBrushless)
-
+        self.gyro = ahrs.create_spi()
     def teleopPeriodic(self):
-        self.io.set(0.5)
+        print('ang: ' + str(self.gyro.getAngle()))
+        print('rol: ' + str(self.gyro.getPitch()))
 
 
         

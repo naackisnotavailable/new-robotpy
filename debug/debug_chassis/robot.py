@@ -26,8 +26,10 @@ class Robot(wpilib.TimedRobot):
         self.stick2 = wpilib.XboxController(1)
         self.drive = wpilib.drive.DifferentialDrive(self.leftMotors, self.rightMotors)
         self.drive.setDeadband(0.03)
+        self.b = rev.CANSparkMax(10, rev.CANSparkMax.MotorType.kBrushless)
 
     def teleopPeriodic(self):
+        self.b.set(0.5)
         lX = self.stick.getLeftX()
         print('lX: ' + str(lX))
         lY = self.stick.getLeftY()
@@ -38,6 +40,7 @@ class Robot(wpilib.TimedRobot):
             print('rightSpeed: ' + str(self.rightMotors.get()))
         else:
             raise Exception("safety toggle, one or more inputs > 1")
+
 
 
         

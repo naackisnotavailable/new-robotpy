@@ -1,3 +1,4 @@
+import time
 def drive(stick, drive):
     lX = stick.getLeftX()
     lY = stick.getLeftY()
@@ -6,13 +7,23 @@ def drive(stick, drive):
     else:
         raise Exception("safety toggle, one or more inputs > 1")
 def balanceCheck(stick, gyro, leftMotors, rightMotors, balancePID, spinPID):
+    print('called')
     if stick.getAButton() == True:
-        if gyro.getAngle() >= 15:
-            print('spinning: ' + str(gyro.getAngle()))
-            spinPID.main(gyro.getAngle(), leftMotors, rightMotors)
-        else:
-            balancePID.main(gyro.getRoll(), leftMotors, rightMotors)
-            print('balancing: ' + str(gyro.getRoll()))
+        leftMotors.set(0.5)
+        rightMotors.set(-0.5)
+        time.sleep(1.0)
+        leftMotors.set(0.0)
+        rightMotors.set(0.0)
+        while True:
+            print('engaged')
+            if gyro.getAngle() >= 15:
+                print('spinning: ' + str(gyro.getAngle()))
+                spinPID.main(gyro.getAngle(), leftMotors, rightMotors)
+            else:
+                balancePID.main(gyro.getPitch(), leftMotors, rightMotors)
+                print('balancing: ' + str(gyro.getPitch()))
+            if stick.getBButton() == True:
+                break
 def getPose(inst):
     return inst.getTable("limelight").getEntry("botpose").getDoubleArray([6])
 def table(stick2, table):
@@ -31,22 +42,3 @@ def intake(stick2, b, t, io):
         b.set(0.0)
         t.set(0.0)
     io.set(stick2.getRightY())
-def encoderSafetyChecks(pos) -> bool:
-    if abs(pos) < 1:
-        return True
-    else:
-        return False
-def testEncoders(io, ioEncoder, exPID):
-    pos = ioEncoder.getPosition()
-    spd = exPID.main(io, ioEncoder)
-    io.set(spd)
-    #io.set(-0.4)
-    #if encoderSafetyChecks(pos) == False:
-    #    io.set(0.0)
-    #elif encoderSafetyChecks(pos) == True:
-    #    io.set(0.5)
-    #if pos > 1:
-    #    io.set(-0.1)
-    #elif pos <1:
-    #    io.set(0.1)
-    print(str(pos))

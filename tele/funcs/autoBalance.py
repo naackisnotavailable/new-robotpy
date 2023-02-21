@@ -21,8 +21,8 @@ class PID(object):
         output = (prop + inte + deri) ** 2
 
 
-        left_motors.set(output)
-        right_motors.set(-output)
+        left_motors.set(-output)
+        right_motors.set(output)
 
         print(str(output))
 
