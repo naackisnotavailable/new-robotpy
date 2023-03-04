@@ -1,0 +1,10 @@
+stick1:
+ljoy = drive
+rjoy = unbound
+abutton = balance engaged
+bbutton = balance disengaged
+nothing on triggers
+
+stick2:
+x = intake
+y & b = table

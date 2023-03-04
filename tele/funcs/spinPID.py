@@ -5,9 +5,9 @@ class PID(object):
         self.inte_last = 0
         self.err_last = 0
     def main(self, gyro_angle, left_motors, right_motors):
-        Kp = 0.015  #tuning
-        Ki = 0.01  #tuning
-        Kd = 0.005 #tuning
+        Kp = 0.03  #tuning
+        Ki = 0.00  #tuning
+        Kd = 0.0 #tuning
 
         Sp = 0
 
@@ -23,7 +23,7 @@ class PID(object):
         left_motors.set(output)
         right_motors.set(output)
 
-        print(str(output))
+        print('spin out: '+str(output))
 
 
 #pid = PID()

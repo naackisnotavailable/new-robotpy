@@ -5,22 +5,25 @@ class PID(object):
         self.inte_last = 0
         self.err_last = 0
         
-    def main(self, ioEncoder, set):
+    def main(self, liftEncoder, set):
         if set == True:
-            Sp = 11.0 #some encoder value
+            Sp = -95.0 #some encoder value
         elif set == False:
             Sp = 0.0
-        Kp = 0.15  #tuning
-        Ki = 0.0125  #tuning
-        Kd = 0.015 #tuning
+        Kp = 0.01  #tuning
+        Ki = 0.00  #tuning
+        Kd = 0.00 #tuning
 
-        err = Sp - ioEncoder.getPosition()
+        err = Sp - liftEncoder.getPosition()
         prop = Kp * err
         inte = Ki * (self.inte_last + err * 0.2)
         deri = Kd * (self.err_last-err / 0.2)
         self.err_last = err
         self.inte_last = inte
 
-        output = (prop + inte + deri) / 2
-
+        output = (prop + inte + deri)
+        if output >= 0.3:
+            output = 0.3
+        elif output <= -0.3:
+            output = -0.3
         return output
