@@ -83,24 +83,48 @@ def grab(grabby, grab, grabEncoder, stick2):
 
     if stick2.getLeftTriggerAxis() > 0.1:
         print('down')
-        grab.set(-1*stick2.getLeftTriggerAxis())
+        grab.set(-0.5*(stick2.getLeftTriggerAxis()**2))
     elif stick2.getRightTriggerAxis() > 0.1:
         print('up')
-        grab.set(stick2.getRightTriggerAxis())
+        grab.set(0.5*stick2.getRightTriggerAxis()**2)
     else:
         grab.set(0.0)
 
 
-def moveOut(io, ioEncoder, exPID, grab, grabEncoder, lift, liftEncoder):
-    io.set(exPID.main(ioEncoder, True))
-    if liftEncoder.getPosition() < 0 or liftEncoder.getPosition() > -50:
-        lift.set(-0.2)
-    else:
-        lift.set(0.0)
-    if liftEncoder.getPosition() < -15:
-        grab.set(-0.3 - grabEncoder.getPosition() / 2)
+def moveOut(io, ioEncoder, exPID, grab, grabEncoder, lift, liftEncoder, grabby, stick2):
+    curr = grabby.getOutputCurrent() / 100
+    if stick2.getRightBumper() == True:
 
+        print('closing')
+        grabby.set(0.4 - curr)
+
+        io.set(exPID.main(ioEncoder, True)) # intake moves out
+        print('liftpos: ' + str(liftEncoder.getPosition()))
+
+        if liftEncoder.getPosition() > -50: #lift begins moving
+            lift.set(-0.2)
+        else:
+            lift.set(0.0)
+
+        grab.set(-0.1)
+
+def moveIn(io, ioEncoder, exPID, grab, grabEncoder, lift, liftEncoder, grabby, stick2):
+    curr = grabby.getOutputCurrent() / 100
+    if stick2.getLeftBumper() == True:
     
+        print('opening')
+        grabby.set(-0.2 + curr)
+
+        io.set(exPID.main(ioEncoder, True)) # intake moves out
+        print('liftpos: ' + str(liftEncoder.getPosition()))
+
+        if liftEncoder.getPosition() < -5: #lift begins moving
+            lift.set(0.2)
+        else:
+            lift.set(0.0)
+
+        grab.set(-0.1)
+
 
 
     
