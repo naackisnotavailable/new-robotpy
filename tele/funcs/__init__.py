@@ -20,15 +20,15 @@ def __init__():
     rightTalon1.configFactoryDefault()
     rightTalon2.configFactoryDefault()
 
-    leftTalon1.config_kP(0, 0.125, 0)
-    leftTalon2.config_kP(0, 0.125, 0)
-    leftTalon1.config_kD(0, 0.2, 0)
-    leftTalon2.config_kD(0, 0.2, 0)
+    leftTalon1.config_kP(0, 0.05, 0)
+    leftTalon2.config_kP(0, 0.05, 0)
+    leftTalon1.config_kD(0, 0.3, 0)
+    leftTalon2.config_kD(0, 0.3, 0)
 
-    rightTalon1.config_kP(0, 0.125, 0)
-    rightTalon2.config_kP(0, 0.125, 0)
-    rightTalon1.config_kD(0, 0.2, 0)
-    rightTalon2.config_kD(0, 0.2, 0)
+    rightTalon1.config_kP(0, 0.05, 0)
+    rightTalon2.config_kP(0, 0.05, 0)
+    rightTalon1.config_kD(0, 0.3, 0)
+    rightTalon2.config_kD(0, 0.3, 0)
 
     leftTalon1.configIntegratedSensorInitializationStrategy(ctre.SensorInitializationStrategy.BootToZero, 0)
     leftTalon2.configIntegratedSensorInitializationStrategy(ctre.SensorInitializationStrategy.BootToZero, 0)

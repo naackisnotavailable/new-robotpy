@@ -5,22 +5,26 @@ class PID(object):
         self.inte_last = 0
         self.err_last = 0
 
-        self.Kp = 0.03  #tuning
-        self.Ki = 0.01  #tuning
-        self.Kd = 0.00 #tuning
-
 
     def main(self, pos, swivel, Sp):
+        if pos < 8:
+            self.Kp = 0.015  #tuning
+            self.Ki = 0.01 #tuning
+            self.Kd = 0.0075 #tuning
+        else:
+            self.Kp = 0.055  #tuning
+            self.Ki = 0.0325 #tuning
+            self.Kd = 0.01 #tuning
 
         err = Sp - pos
         prop = self.Kp * err
         inte = self.Ki * (self.inte_last + err * 0.2)
-        deri = self.Kd * (self.err_last-err / 0.2)
+        deri = self.Kd * ((err - self.err_last) / 0.2)
         self.err_last = err
         self.inte_last = inte
 
         output = (prop + inte + deri)
-
+        
         swivel.set(output)
 
 #pid = PID()
@@ -33,3 +37,6 @@ class PID(object):
 #    input = output - 10 * output
 #    print(str(output))
 #    x+=1
+
+# 0.025 * 12 +0 +0
+# 0.3 

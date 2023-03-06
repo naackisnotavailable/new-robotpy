@@ -1,4 +1,7 @@
+# auton go back 29 and then forward to 20 to place
+
 import wpilib
+
 from wpilib.drive import DifferentialDrive
 import wpilib.drive
 import ctre
@@ -61,7 +64,15 @@ class Robot(wpilib.TimedRobot):
 
 
     def autonomousPeriodic(self):  #test just drivetrain movement before anything else.
+
+        print('grab pos: ' + str(self.grabEncoder.getPosition()))
+
+
         print('active')
+
+        curr = self.grabby.getOutputCurrent() / 100
+
+        
 
         # part one; place preloaded cube
 
@@ -71,8 +82,6 @@ class Robot(wpilib.TimedRobot):
         #self.leftTalon2.set(ctre._ctre.ControlMode.Position, 12000)
         #self.rightTalon1.set(ctre._ctre.ControlMode.Position, 12000)
         #self.rightTalon2.set(ctre._ctre.ControlMode.Position, 12000)
-
-        curr = self.grabby.getOutputCurrent() / 125
 
         print('closing')
         self.grabby.set(0.55 - curr)
@@ -87,16 +96,23 @@ class Robot(wpilib.TimedRobot):
         else:
             self.lift.set(0.0)
 
-        self.grab.set(-0.1)
+
 
         if self.liftEncoder.getPosition() > -55:
             self.grab.set(-0.1)
         else:
-            self.autonSwiv.main(self.grabEncoder.getPosition(), self.grab, 13)
+            self.autonSwiv.main(self.grabEncoder.getPosition(), self.grab, 21)
+
+
         
-        if self.grabEncoder() > 8:
-            if self.liftEncoder.getPosition() < -50:
+        if self.grabEncoder.getPosition() > 8:
+            if self.liftEncoder.getPosition() < -60 and self.liftEncoder.getPosition() > -75:
                 self.lift.set(-0.25)
+            else:
+                self.lift.set(0.0)
+        
+
+            
 
 
 
