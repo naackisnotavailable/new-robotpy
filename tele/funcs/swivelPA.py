@@ -5,9 +5,9 @@ class PID(object):
         self.inte_last = 0
         self.err_last = 0
 
-        self.Kp = 0.235  #tuning
-        self.Ki = 0.1  #tuning
-        self.Kd = 0.0 #tuning
+        self.Kp = 0.03  #tuning
+        self.Ki = 0.01  #tuning
+        self.Kd = 0.00 #tuning
 
 
     def main(self, pos, swivel, Sp):

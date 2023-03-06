@@ -4,6 +4,15 @@ from funcs import swivelP
 
 swP = swivelP.PID()
 
+on1 = 0
+on2 = 0
+
+gPos = 0
+
+def setGPos(grabEncoder):
+    global gPos
+    gPos = grabEncoder.getPosition()
+
 def drive(leftTalon1, leftTalon2, rightTalon1, rightTalon2, stick, drive, slowed):
     b = stick.getBButtonPressed()
     if b == True:
@@ -57,12 +66,18 @@ def table(stick2, table):
         table.set(-0.125)
     else:
         table.set(0.0)
-def intake(stick2, b, t, io, ioEncoder, exPID, on, on2, a, c):
+def intake(stick2, b, t, io, ioEncoder, exPID, a, c):
+    global on1
+    global on2
+    print(a, c)
+
+    x = stick2.getXButton()
+    if x == True:
+        on1 += 1
+
     if a == False and c == False:
-        x = stick2.getXButtonPressed()
+
         if x == True:
-            on += 1
-        if on % 2 == 1:
             b.set(-0.75)
             t.set(0.75)
         else:
@@ -76,7 +91,6 @@ def intake(stick2, b, t, io, ioEncoder, exPID, on, on2, a, c):
             io.set(exPID.main(ioEncoder, True))
         else:
             io.set(exPID.main(ioEncoder, False))
-        return (on, on2)
 def lift(lift, liftEncoder, exPID2, stick2, a, b):
     if a == False and b == False:
         if liftEncoder.getPosition() > 0.1:
@@ -107,9 +121,9 @@ def lift(lift, liftEncoder, exPID2, stick2, a, b):
             #elif stick2.getLeftBumper() == False:
             #    lift.set(exPID2.main(liftEncoder, False))
     
-def grab(grabby, grab, grabEncoder, stick2, gPos, a, b):
+def grab(grabby, grab, grabEncoder, stick2, a, b):
+    global gPos
     if a == False and b == False:
-        print('swivel power: ' + str(grab.getOutputCurrent()))
         curr = grabby.getOutputCurrent() / 100
         if stick2.getRightY() < -0.1 :
             print('closing')
@@ -118,9 +132,11 @@ def grab(grabby, grab, grabEncoder, stick2, gPos, a, b):
             print('opening')
             grabby.set(-0.2 + curr)
 
-
-        if abs(stick2.getRightTriggerAxis()) < 0.04 and abs(stick2.getLeftTriggerAxis()) < 0.04:
+        if abs(stick2.getRightTriggerAxis()) < 0.01 and abs(stick2.getLeftTriggerAxis()) < 0.01:
             swP.main(grabEncoder.getPosition(), grab, gPos)
+            print('BRAKE ENGAGED')
+
+
         else:
             if stick2.getLeftTriggerAxis() > 0.1:
                 print('down')
@@ -131,13 +147,14 @@ def grab(grabby, grab, grabEncoder, stick2, gPos, a, b):
             else:
                 grab.set(0.0)
             gPos = grabEncoder.getPosition()
-        return gPos
-    
 
 
 def moveOut(io, ioEncoder, exPID, grab, grabEncoder, lift, liftEncoder, grabby, stick2):
-    curr = grabby.getOutputCurrent() / 75
+    curr = grabby.getOutputCurrent() / 100
     if stick2.getRightBumper() == True:
+        global gPos
+        gPos = grabEncoder.getPosition()
+
         interrupted = True
 
         print('closing')
@@ -147,7 +164,7 @@ def moveOut(io, ioEncoder, exPID, grab, grabEncoder, lift, liftEncoder, grabby, 
         print('liftpos: ' + str(liftEncoder.getPosition()))
 
         if liftEncoder.getPosition() > -45: #lift begins moving
-            lift.set(-0.2)
+            lift.set(-0.4)
         else:
             lift.set(0.0)
 
@@ -157,27 +174,32 @@ def moveOut(io, ioEncoder, exPID, grab, grabEncoder, lift, liftEncoder, grabby, 
     return interrupted
 
 def moveIn(io, ioEncoder, exPID, grab, grabEncoder, lift, liftEncoder, grabby, stick2):
-    curr = grabby.getOutputCurrent() / 75
-    print('SWIVEL ENCODER: ' + str(grabEncoder.getPosition()))
+    global gPos
+    curr = grabby.getOutputCurrent() / 100
 
-    if stick2.getLeftBumper() == True and liftEncoder.getPosition() < -45:
+    if stick2.getLeftBumper() == True:
+        gPos = grabEncoder.getPosition()
         interrupted = True
         print('running t1')
 
-        print('closing')
-        grabby.set(0.4 - curr)
+        if liftEncoder.getPosition() > -15:
+            print('opening')
+            grabby.set(-0.2 + curr)
+        else:
+            print('closing')
+            grabby.set(0.4 - curr)
     
         io.set(exPID.main(ioEncoder, True)) # intake moves out
         print('liftpos: ' + str(liftEncoder.getPosition()))
 
         grab.set(-0.1)
 
-        if grabEncoder.getPosition() < -0.5:
+        if grabEncoder.getPosition() < -1:
             print('running t2')
 
             if liftEncoder.getPosition() < -5: #lift begins moving
                 print('running t3')
-                lift.set(0.2)
+                lift.set(0.4)
             else:
                 lift.set(0.0)
         else:

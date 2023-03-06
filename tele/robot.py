@@ -13,6 +13,7 @@ from funcs import functions
 from funcs import autoBalance as balancePID
 from funcs import spinPID as spinPID
 from funcs import __init__ as initialize
+from funcs import swivelPA
 
 class Robot(wpilib.TimedRobot):
     def robotInit(self):
@@ -53,6 +54,10 @@ class Robot(wpilib.TimedRobot):
         self.slowed = 0
         self.interrupted = False
         self.interrupted1 = False
+        self.autonSwiv = swivelPA.PID()
+
+        functions.setGPos(self.grabEncoder)
+
 
 
     def autonomousPeriodic(self):  #test just drivetrain movement before anything else.
@@ -61,27 +66,45 @@ class Robot(wpilib.TimedRobot):
         # part one; place preloaded cube
 
         # Move 24 in back from start to place preloaded cube, CHECK DIRECTION BEFORE TESTING
-        self.leftTalon1.set(ctre._ctre.ControlMode.Position, 12000)
-        self.leftTalon2.set(ctre._ctre.ControlMode.Position, 12000)
-        self.rightTalon1.set(ctre._ctre.ControlMode.Position, 12000)
-        self.rightTalon2.set(ctre._ctre.ControlMode.Position, 12000)
 
-        curr = self.grabby.getOutputCurrent() / 100
+        #self.leftTalon1.set(ctre._ctre.ControlMode.Position, 12000)
+        #self.leftTalon2.set(ctre._ctre.ControlMode.Position, 12000)
+        #self.rightTalon1.set(ctre._ctre.ControlMode.Position, 12000)
+        #self.rightTalon2.set(ctre._ctre.ControlMode.Position, 12000)
+
+        curr = self.grabby.getOutputCurrent() / 125
 
         print('closing')
-        self.grabby.set(0.4 - curr)
+        self.grabby.set(0.55 - curr)
+
         self.io.set(self.exPID.main(self.ioEncoder, True)) # intake moves out
+
+
         print('liftpos: ' + str(self.liftEncoder.getPosition()))
-        if self.liftEncoder.getPosition() > -75: #lift begins moving
-            self.lift.set(-0.2)
+
+        if self.liftEncoder.getPosition() > -60: #lift begins moving
+            self.lift.set(-0.4)
         else:
             self.lift.set(0.0)
+
         self.grab.set(-0.1)
+
+        if self.liftEncoder.getPosition() > -55:
+            self.grab.set(-0.1)
+        else:
+            self.autonSwiv.main(self.grabEncoder.getPosition(), self.grab, 13)
+        
+        if self.grabEncoder() > 8:
+            if self.liftEncoder.getPosition() < -50:
+                self.lift.set(-0.25)
+
 
 
         if self.liftEncoder.getPosition() < -70 and self.grabbyEncoder.getPosition() > 4:
             print('opening')
             self.grabby.set(-0.2 + curr)
+
+
         #NEED TO CHECK WHEN EXTENDED, THEN PLACE
 
         #part 2; move everything back in // NOT WORKING PROBABLY
@@ -120,13 +143,17 @@ class Robot(wpilib.TimedRobot):
                                       self.stick, self.myDrive, self.slowed)
         
         functions.table(self.stick2, self.tableMotor)
-        (self.on, self.on2) = functions.intake(self.stick2, self.bottomIn, self.topIn, self.io, self.ioEncoder, self.exPID, self.on, self.on2, self.interrupted, self.interrupted1)
-        functions.lift(self.lift, self.liftEncoder, self.extendPID2, self.stick2, self.interrupted, self.interrupted1)
-        self.gPos = functions.grab(self.grabby, self.grab, self.grabEncoder, self.stick2, self.gPos, self.interrupted, self.interrupted1)
+
+        functions.intake(self.stick2, self.bottomIn, self.topIn, self.io, self.ioEncoder, self.exPID, self.interrupted, self.interrupted1)
+
+        functions.grab(self.grabby, self.grab, self.grabEncoder, self.stick2, self.interrupted, self.interrupted1)
+
+
         self.interrupted = functions.moveOut(self.io, self.ioEncoder, self.exPID, self.grab, self.grabEncoder, self.lift, self.liftEncoder, self.grabby, self.stick2)
         self.interrupted1 = functions.moveIn(self.io, self.ioEncoder, self.exPID, self.grab, self.grabEncoder, self.lift, self.liftEncoder, self.grabby, self.stick2)
 
         self.timer, self.on3 = functions.balanceCheck(self.stick, self.gyro, self.leftMotors, self.rightMotors, self.balancePID, self.spinPID, self.timer, self.on3)
+        functions.lift(self.lift, self.liftEncoder, self.extendPID2, self.stick2, self.interrupted, self.interrupted1)
 
 if __name__ == "__main__":
     wpilib.run(Robot)
