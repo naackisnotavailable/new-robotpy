@@ -18,10 +18,27 @@ def __init__():
     leftTalon2.configFactoryDefault()
     rightTalon1.configFactoryDefault()
     rightTalon2.configFactoryDefault()
-    #leftTalon1.setNeutralMode(ctre._ctre.NeutralMode.Brake)
-    #leftTalon2.setNeutralMode(ctre._ctre.NeutralMode.Brake)
-    #rightTalon1.setNeutralMode(ctre._ctre.NeutralMode.Brake)
-    #rightTalon2.setNeutralMode(ctre._ctre.NeutralMode.Brake)
+
+    leftTalon1.config_kP(0, 0.125, 0)
+    leftTalon2.config_kP(0, 0.125, 0)
+    leftTalon1.config_kD(0, 0.2, 0)
+    leftTalon2.config_kD(0, 0.2, 0)
+
+    rightTalon1.config_kP(0, 0.125, 0)
+    rightTalon2.config_kP(0, 0.125, 0)
+    rightTalon1.config_kD(0, 0.2, 0)
+    rightTalon2.config_kD(0, 0.2, 0)
+
+    leftTalon1.configIntegratedSensorInitializationStrategy(ctre.SensorInitializationStrategy.BootToZero, 0)
+    leftTalon2.configIntegratedSensorInitializationStrategy(ctre.SensorInitializationStrategy.BootToZero, 0)
+    rightTalon1.configIntegratedSensorInitializationStrategy(ctre.SensorInitializationStrategy.BootToZero, 0)
+    rightTalon2.configIntegratedSensorInitializationStrategy(ctre.SensorInitializationStrategy.BootToZero, 0)
+
+    leftTalon1.configSelectedFeedbackSensor(ctre._ctre.FeedbackDevice.IntegratedSensor, 0)
+    leftTalon2.configSelectedFeedbackSensor(ctre._ctre.FeedbackDevice.IntegratedSensor, 0)
+    rightTalon1.configSelectedFeedbackSensor(ctre._ctre.FeedbackDevice.IntegratedSensor, 0)
+    rightTalon2.configSelectedFeedbackSensor(ctre._ctre.FeedbackDevice.IntegratedSensor, 0)
+
     gyro = ahrs.create_spi()
     leftMotors = wpilib.MotorControllerGroup(leftTalon1, leftTalon2)
     rightMotors = wpilib.MotorControllerGroup(rightTalon1, rightTalon2)
@@ -48,4 +65,4 @@ def __init__():
     ioEncoder.setPosition(0)
     liftEncoder.setPosition(0)
     timer = 0
-    return (leftMotors, rightMotors, gyro, spinPID, balancePID, exPID, stick, stick2, myDrive, tableMotor, bottomIn, topIn, io, ioEncoder, ntinst, timer, lift, liftEncoder, exPID2, grab, grabEncoder, grabby, grabbyEncoder)
+    return (leftTalon1, leftTalon2, rightTalon1, rightTalon2, leftMotors, rightMotors, gyro, spinPID, balancePID, exPID, stick, stick2, myDrive, tableMotor, bottomIn, topIn, io, ioEncoder, ntinst, timer, lift, liftEncoder, exPID2, grab, grabEncoder, grabby, grabbyEncoder)

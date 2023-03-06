@@ -1,11 +1,28 @@
 import time
-def drive(stick, drive):
-    lX = stick.getLeftX()
-    lY = stick.getLeftY()
+import ctre
+def drive(leftTalon1, leftTalon2, rightTalon1, rightTalon2, stick, drive, slowed):
+    b = stick.getBButtonPressed()
+    if b == True:
+        slowed += 1
+    if slowed % 2 == 1:
+        lX = stick.getLeftX() * 0.15
+        lY = stick.getLeftY() * 0.15
+        leftTalon1.setNeutralMode(ctre._ctre.NeutralMode.Brake)
+        leftTalon2.setNeutralMode(ctre._ctre.NeutralMode.Brake)
+        rightTalon1.setNeutralMode(ctre._ctre.NeutralMode.Brake)
+        rightTalon2.setNeutralMode(ctre._ctre.NeutralMode.Brake)
+    else:
+        lX = stick.getLeftX()
+        lY = stick.getLeftY()
+        leftTalon1.setNeutralMode(ctre._ctre.NeutralMode.Coast)
+        leftTalon2.setNeutralMode(ctre._ctre.NeutralMode.Coast)
+        rightTalon1.setNeutralMode(ctre._ctre.NeutralMode.Coast)
+        rightTalon2.setNeutralMode(ctre._ctre.NeutralMode.Coast)
     if lX <= 1.0 and lY <= 1.0:
         drive.curvatureDrive(lX, lY, True)
     else:
         raise Exception("safety toggle, one or more inputs > 1")
+    return slowed
 def balanceCheck(stick, gyro, leftMotors, rightMotors, balancePID, spinPID, timer):
     if stick.getAButton() == True:
             if timer < 50:
@@ -33,17 +50,27 @@ def table(stick2, table):
         table.set(-0.125)
     else:
         table.set(0.0)
-def intake(stick2, b, t, io, ioEncoder, exPID):
-    x = stick2.getXButton()
+def intake(stick2, b, t, io, ioEncoder, exPID, on, on2):
+    x = stick2.getXButtonPressed()
     if x == True:
+        on += 1
+    if on % 2 == 1:
         b.set(-0.75)
         t.set(0.75)
-    elif x == False:
+    else:
         b.set(0.0)
         t.set(0.0)
-    ioC = stick2.getAButton()
-    io.set(exPID.main(ioEncoder, ioC))
+    
+    a = stick2.getAButtonPressed()
+    if a == True:
+        on2 += 1
+    if on2 % 2 == 1:
+        io.set(exPID.main(ioEncoder, True))
+    else:
+        io.set(exPID.main(ioEncoder, False))
+    return (on, on2)
 def lift(lift, liftEncoder, exPID2, stick2):
+
     if liftEncoder.getPosition() > 0.1:
         print('disabled')
         lift.set(0.0)
@@ -71,7 +98,9 @@ def lift(lift, liftEncoder, exPID2, stick2):
         #    lift.set(exPID2.main(liftEncoder, True))
         #elif stick2.getLeftBumper() == False:
         #    lift.set(exPID2.main(liftEncoder, False))
+    
 def grab(grabby, grab, grabEncoder, stick2):
+    print('swivel power: ' + str(grab.getOutputCurrent()))
     curr = grabby.getOutputCurrent() / 100
     if stick2.getRightY() < -0.1 :
         print('closing')
@@ -79,16 +108,19 @@ def grab(grabby, grab, grabEncoder, stick2):
     elif stick2.getRightY() > 0.1:
         print('opening')
         grabby.set(-0.2 + curr)
-    
 
-    if stick2.getLeftTriggerAxis() > 0.1:
-        print('down')
-        grab.set(-0.5*(stick2.getLeftTriggerAxis()**2))
-    elif stick2.getRightTriggerAxis() > 0.1:
-        print('up')
-        grab.set(0.5*stick2.getRightTriggerAxis()**2)
+
+    if abs(stick2.getRightTriggerAxis()) < 0.04 and abs(stick2.getLeftTriggerAxis()) < 0.04:
+        pass # PID?
     else:
-        grab.set(0.0)
+        if stick2.getLeftTriggerAxis() > 0.1:
+            print('down')
+            grab.set(-0.5*(stick2.getLeftTriggerAxis()**2))
+        elif stick2.getRightTriggerAxis() > 0.1:
+            print('up')
+            grab.set(0.5*stick2.getRightTriggerAxis()**2)
+        else:
+            grab.set(0.0)
 
 
 def moveOut(io, ioEncoder, exPID, grab, grabEncoder, lift, liftEncoder, grabby, stick2):
@@ -101,7 +133,7 @@ def moveOut(io, ioEncoder, exPID, grab, grabEncoder, lift, liftEncoder, grabby, 
         io.set(exPID.main(ioEncoder, True)) # intake moves out
         print('liftpos: ' + str(liftEncoder.getPosition()))
 
-        if liftEncoder.getPosition() > -50: #lift begins moving
+        if liftEncoder.getPosition() > -45: #lift begins moving
             lift.set(-0.2)
         else:
             lift.set(0.0)
@@ -110,21 +142,28 @@ def moveOut(io, ioEncoder, exPID, grab, grabEncoder, lift, liftEncoder, grabby, 
 
 def moveIn(io, ioEncoder, exPID, grab, grabEncoder, lift, liftEncoder, grabby, stick2):
     curr = grabby.getOutputCurrent() / 100
-    if stick2.getLeftBumper() == True:
-    
-        print('opening')
-        grabby.set(-0.2 + curr)
+    print('SWIVEL ENCODER: ' + str(grabEncoder.getPosition()))
 
+    if stick2.getLeftBumper() == True and liftEncoder.getPosition() < -45:
+        print('running t1')
+
+        print('closing')
+        grabby.set(0.4 - curr)
+    
         io.set(exPID.main(ioEncoder, True)) # intake moves out
         print('liftpos: ' + str(liftEncoder.getPosition()))
 
-        if liftEncoder.getPosition() < -5: #lift begins moving
-            lift.set(0.2)
-        else:
-            lift.set(0.0)
-
         grab.set(-0.1)
 
+        if grabEncoder.getPosition() < -0.5:
+            print('running t2')
 
+            if liftEncoder.getPosition() < -5: #lift begins moving
+                print('running t3')
+                lift.set(0.2)
+            else:
+                lift.set(0.0)
+        else:
+            lift.set(0.0)
 
     

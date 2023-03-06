@@ -9,10 +9,10 @@ class PID(object):
         if set == True:
             Sp = 11.0 #some encoder value
         elif set == False:
-            Sp = 0.0
+            Sp = -0.5
         Kp = 0.15  #tuning
-        Ki = 0.0125  #tuning
-        Kd = 0.015 #tuning
+        Ki = 0.0175  #tuning
+        Kd = 0.0150 #tuning
 
         err = Sp - ioEncoder.getPosition()
         prop = Kp * err
@@ -21,6 +21,6 @@ class PID(object):
         self.err_last = err
         self.inte_last = inte
 
-        output = (prop + inte + deri) / 2
+        output = (prop + inte + deri) / 3.0
 
         return output
