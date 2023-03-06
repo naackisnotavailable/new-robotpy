@@ -57,84 +57,88 @@ def table(stick2, table):
         table.set(-0.125)
     else:
         table.set(0.0)
-def intake(stick2, b, t, io, ioEncoder, exPID, on, on2):
-    x = stick2.getXButtonPressed()
-    if x == True:
-        on += 1
-    if on % 2 == 1:
-        b.set(-0.75)
-        t.set(0.75)
-    else:
-        b.set(0.0)
-        t.set(0.0)
-    
-    a = stick2.getAButtonPressed()
-    if a == True:
-        on2 += 1
-    if on2 % 2 == 1:
-        io.set(exPID.main(ioEncoder, True))
-    else:
-        io.set(exPID.main(ioEncoder, False))
-    return (on, on2)
-def lift(lift, liftEncoder, exPID2, stick2):
-
-    if liftEncoder.getPosition() > 0.1:
-        print('disabled')
-        lift.set(0.0)
-    elif liftEncoder.getPosition() < -105:
-        print('disabled')
-        lift.set(0.0)
-    else:
-        spd = stick2.getLeftY()
-        if spd < 0:
-            spd = -1*(spd**2)
-        elif spd > 0:
-            spd = spd**2
+def intake(stick2, b, t, io, ioEncoder, exPID, on, on2, a, c):
+    if a == False and c == False:
+        x = stick2.getXButtonPressed()
+        if x == True:
+            on += 1
+        if on % 2 == 1:
+            b.set(-0.75)
+            t.set(0.75)
         else:
-            spd = 0
-        
-        lift.set(spd)
+            b.set(0.0)
+            t.set(0.0)
 
-        #if spd < 0:
-        #    spd = -1*(spd**2)
-        #elif spd > 0 :
-        #    spd = spd**2
-        #lift.set(spd)
-
-        #if stick2.getLeftBumper() == True:
-        #    lift.set(exPID2.main(liftEncoder, True))
-        #elif stick2.getLeftBumper() == False:
-        #    lift.set(exPID2.main(liftEncoder, False))
-    
-def grab(grabby, grab, grabEncoder, stick2, gPos):
-    print('swivel power: ' + str(grab.getOutputCurrent()))
-    curr = grabby.getOutputCurrent() / 100
-    if stick2.getRightY() < -0.1 :
-        print('closing')
-        grabby.set(0.4 - curr)
-    elif stick2.getRightY() > 0.1:
-        print('opening')
-        grabby.set(-0.2 + curr)
-
-
-    if abs(stick2.getRightTriggerAxis()) < 0.04 and abs(stick2.getLeftTriggerAxis()) < 0.04:
-        swP.main(grabEncoder.getPosition(), grab, gPos)
-    else:
-        if stick2.getLeftTriggerAxis() > 0.1:
-            print('down')
-            grab.set(-0.5*(stick2.getLeftTriggerAxis()**2))
-        elif stick2.getRightTriggerAxis() > 0.1:
-            print('up')
-            grab.set(0.5*stick2.getRightTriggerAxis()**2)
+        a = stick2.getAButtonPressed()
+        if a == True:
+            on2 += 1
+        if on2 % 2 == 1:
+            io.set(exPID.main(ioEncoder, True))
         else:
-            grab.set(0.0)
-        gPos = grabEncoder.getPosition()
-    return gPos
+            io.set(exPID.main(ioEncoder, False))
+        return (on, on2)
+def lift(lift, liftEncoder, exPID2, stick2, a, b):
+    if a == False and b == False:
+        if liftEncoder.getPosition() > 0.1:
+            print('disabled')
+            lift.set(0.0)
+        elif liftEncoder.getPosition() < -105:
+            print('disabled')
+            lift.set(0.0)
+        else:
+            spd = stick2.getLeftY()
+            if spd < 0:
+                spd = -1*(spd**2)
+            elif spd > 0:
+                spd = spd**2
+            else:
+                spd = 0
+
+            lift.set(spd)
+
+            #if spd < 0:
+            #    spd = -1*(spd**2)
+            #elif spd > 0 :
+            #    spd = spd**2
+            #lift.set(spd)
+
+            #if stick2.getLeftBumper() == True:
+            #    lift.set(exPID2.main(liftEncoder, True))
+            #elif stick2.getLeftBumper() == False:
+            #    lift.set(exPID2.main(liftEncoder, False))
+    
+def grab(grabby, grab, grabEncoder, stick2, gPos, a, b):
+    if a == False and b == False:
+        print('swivel power: ' + str(grab.getOutputCurrent()))
+        curr = grabby.getOutputCurrent() / 100
+        if stick2.getRightY() < -0.1 :
+            print('closing')
+            grabby.set(0.4 - curr)
+        elif stick2.getRightY() > 0.1:
+            print('opening')
+            grabby.set(-0.2 + curr)
+
+
+        if abs(stick2.getRightTriggerAxis()) < 0.04 and abs(stick2.getLeftTriggerAxis()) < 0.04:
+            swP.main(grabEncoder.getPosition(), grab, gPos)
+        else:
+            if stick2.getLeftTriggerAxis() > 0.1:
+                print('down')
+                grab.set(-0.5*(stick2.getLeftTriggerAxis()**2))
+            elif stick2.getRightTriggerAxis() > 0.1:
+                print('up')
+                grab.set(0.5*stick2.getRightTriggerAxis()**2)
+            else:
+                grab.set(0.0)
+            gPos = grabEncoder.getPosition()
+        return gPos
+    
 
 
 def moveOut(io, ioEncoder, exPID, grab, grabEncoder, lift, liftEncoder, grabby, stick2):
     curr = grabby.getOutputCurrent() / 75
     if stick2.getRightBumper() == True:
+        interrupted = True
 
         print('closing')
         grabby.set(0.4 - curr)
@@ -148,12 +152,16 @@ def moveOut(io, ioEncoder, exPID, grab, grabEncoder, lift, liftEncoder, grabby, 
             lift.set(0.0)
 
         grab.set(-0.1)
+    else:
+        interrupted = False
+    return interrupted
 
 def moveIn(io, ioEncoder, exPID, grab, grabEncoder, lift, liftEncoder, grabby, stick2):
     curr = grabby.getOutputCurrent() / 75
     print('SWIVEL ENCODER: ' + str(grabEncoder.getPosition()))
 
     if stick2.getLeftBumper() == True and liftEncoder.getPosition() < -45:
+        interrupted = True
         print('running t1')
 
         print('closing')
@@ -174,5 +182,8 @@ def moveIn(io, ioEncoder, exPID, grab, grabEncoder, lift, liftEncoder, grabby, s
                 lift.set(0.0)
         else:
             lift.set(0.0)
+    else:
+        interrupted = False
+    return interrupted
 
     

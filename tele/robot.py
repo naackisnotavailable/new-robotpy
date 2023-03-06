@@ -51,6 +51,8 @@ class Robot(wpilib.TimedRobot):
         self.on2 = 0
         self.on3 = 0
         self.slowed = 0
+        self.interrupted = False
+        self.interrupted1 = False
 
 
     def autonomousPeriodic(self):  #test just drivetrain movement before anything else.
@@ -118,11 +120,11 @@ class Robot(wpilib.TimedRobot):
                                       self.stick, self.myDrive, self.slowed)
         
         functions.table(self.stick2, self.tableMotor)
-        (self.on, self.on2) = functions.intake(self.stick2, self.bottomIn, self.topIn, self.io, self.ioEncoder, self.exPID, self.on, self.on2)
-        functions.lift(self.lift, self.liftEncoder, self.extendPID2, self.stick2)
-        self.gPos = functions.grab(self.grabby, self.grab, self.grabEncoder, self.stick2, self.gPos)
-        functions.moveOut(self.io, self.ioEncoder, self.exPID, self.grab, self.grabEncoder, self.lift, self.liftEncoder, self.grabby, self.stick2)
-        functions.moveIn(self.io, self.ioEncoder, self.exPID, self.grab, self.grabEncoder, self.lift, self.liftEncoder, self.grabby, self.stick2)
+        (self.on, self.on2) = functions.intake(self.stick2, self.bottomIn, self.topIn, self.io, self.ioEncoder, self.exPID, self.on, self.on2, self.interrupted, self.interrupted1)
+        functions.lift(self.lift, self.liftEncoder, self.extendPID2, self.stick2, self.interrupted, self.interrupted1)
+        self.gPos = functions.grab(self.grabby, self.grab, self.grabEncoder, self.stick2, self.gPos, self.interrupted, self.interrupted1)
+        self.interrupted = functions.moveOut(self.io, self.ioEncoder, self.exPID, self.grab, self.grabEncoder, self.lift, self.liftEncoder, self.grabby, self.stick2)
+        self.interrupted1 = functions.moveIn(self.io, self.ioEncoder, self.exPID, self.grab, self.grabEncoder, self.lift, self.liftEncoder, self.grabby, self.stick2)
 
         self.timer, self.on3 = functions.balanceCheck(self.stick, self.gyro, self.leftMotors, self.rightMotors, self.balancePID, self.spinPID, self.timer, self.on3)
 
