@@ -1,5 +1,9 @@
 import time
 import ctre
+from funcs import swivelP
+
+swP = swivelP.PID()
+
 def drive(leftTalon1, leftTalon2, rightTalon1, rightTalon2, stick, drive, slowed):
     b = stick.getBButtonPressed()
     if b == True:
@@ -23,8 +27,9 @@ def drive(leftTalon1, leftTalon2, rightTalon1, rightTalon2, stick, drive, slowed
     else:
         raise Exception("safety toggle, one or more inputs > 1")
     return slowed
-def balanceCheck(stick, gyro, leftMotors, rightMotors, balancePID, spinPID, timer):
+def balanceCheck(stick, gyro, leftMotors, rightMotors, balancePID, spinPID, timer, on3):
     if stick.getAButton() == True:
+        if on3 % 2 == 1:
             if timer < 50:
                 leftMotors.set(0.0)#0.5)
                 rightMotors.set(0.0)#-0.5)
@@ -40,7 +45,9 @@ def balanceCheck(stick, gyro, leftMotors, rightMotors, balancePID, spinPID, time
                     print('balancing: ' + str(gyro.getPitch()))
                 if stick.getAButton() == False:
                     timer = 0
-    return timer
+        else:
+            on += 1
+    return timer, on3
 def getPose(inst):
     return inst.getTable("limelight").getEntry("botpose").getDoubleArray([6])
 def table(stick2, table):
@@ -99,7 +106,7 @@ def lift(lift, liftEncoder, exPID2, stick2):
         #elif stick2.getLeftBumper() == False:
         #    lift.set(exPID2.main(liftEncoder, False))
     
-def grab(grabby, grab, grabEncoder, stick2):
+def grab(grabby, grab, grabEncoder, stick2, gPos):
     print('swivel power: ' + str(grab.getOutputCurrent()))
     curr = grabby.getOutputCurrent() / 100
     if stick2.getRightY() < -0.1 :
@@ -111,7 +118,7 @@ def grab(grabby, grab, grabEncoder, stick2):
 
 
     if abs(stick2.getRightTriggerAxis()) < 0.04 and abs(stick2.getLeftTriggerAxis()) < 0.04:
-        pass # PID?
+        swP.main(grabEncoder.getPosition(), grab, gPos)
     else:
         if stick2.getLeftTriggerAxis() > 0.1:
             print('down')
@@ -121,10 +128,12 @@ def grab(grabby, grab, grabEncoder, stick2):
             grab.set(0.5*stick2.getRightTriggerAxis()**2)
         else:
             grab.set(0.0)
+        gPos = grabEncoder.getPosition()
+    return gPos
 
 
 def moveOut(io, ioEncoder, exPID, grab, grabEncoder, lift, liftEncoder, grabby, stick2):
-    curr = grabby.getOutputCurrent() / 100
+    curr = grabby.getOutputCurrent() / 75
     if stick2.getRightBumper() == True:
 
         print('closing')
@@ -141,7 +150,7 @@ def moveOut(io, ioEncoder, exPID, grab, grabEncoder, lift, liftEncoder, grabby, 
         grab.set(-0.1)
 
 def moveIn(io, ioEncoder, exPID, grab, grabEncoder, lift, liftEncoder, grabby, stick2):
-    curr = grabby.getOutputCurrent() / 100
+    curr = grabby.getOutputCurrent() / 75
     print('SWIVEL ENCODER: ' + str(grabEncoder.getPosition()))
 
     if stick2.getLeftBumper() == True and liftEncoder.getPosition() < -45:

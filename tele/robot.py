@@ -44,13 +44,16 @@ class Robot(wpilib.TimedRobot):
          self.grab,
          self.grabEncoder,
          self.grabby,
-         self.grabbyEncoder) = initialize()
+         self.grabbyEncoder,
+         self.swP,
+         self.gPos) = initialize()
         self.on = 0
         self.on2 = 0
+        self.on3 = 0
         self.slowed = 0
 
 
-    def autonomousPeriodic(self):
+    def autonomousPeriodic(self):  #test just drivetrain movement before anything else.
         print('active')
 
         # part one; place preloaded cube
@@ -117,9 +120,11 @@ class Robot(wpilib.TimedRobot):
         functions.table(self.stick2, self.tableMotor)
         (self.on, self.on2) = functions.intake(self.stick2, self.bottomIn, self.topIn, self.io, self.ioEncoder, self.exPID, self.on, self.on2)
         functions.lift(self.lift, self.liftEncoder, self.extendPID2, self.stick2)
-        functions.grab(self.grabby, self.grab, self.grabEncoder, self.stick2)
+        self.gPos = functions.grab(self.grabby, self.grab, self.grabEncoder, self.stick2, self.gPos)
         functions.moveOut(self.io, self.ioEncoder, self.exPID, self.grab, self.grabEncoder, self.lift, self.liftEncoder, self.grabby, self.stick2)
         functions.moveIn(self.io, self.ioEncoder, self.exPID, self.grab, self.grabEncoder, self.lift, self.liftEncoder, self.grabby, self.stick2)
+
+        self.timer, self.on3 = functions.balanceCheck(self.stick, self.gyro, self.leftMotors, self.rightMotors, self.balancePID, self.spinPID, self.timer, self.on3)
 
 if __name__ == "__main__":
     wpilib.run(Robot)

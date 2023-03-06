@@ -8,6 +8,7 @@ import rev
 import ntcore
 from funcs import extendPID as ex
 from funcs import extendPID2 as ex2
+from funcs import swivelP
 
 def __init__():
     leftTalon1 = ctre.WPI_TalonFX(5)
@@ -46,6 +47,7 @@ def __init__():
     balancePID = balance.PID()
     exPID = ex.PID()
     exPID2 = ex2.PID()
+    swP = swivelP.PID()
     stick = wpilib.XboxController(0)
     stick2 = wpilib.XboxController(1)
     myDrive = wpilib.drive.DifferentialDrive(leftMotors, rightMotors)
@@ -65,4 +67,29 @@ def __init__():
     ioEncoder.setPosition(0)
     liftEncoder.setPosition(0)
     timer = 0
-    return (leftTalon1, leftTalon2, rightTalon1, rightTalon2, leftMotors, rightMotors, gyro, spinPID, balancePID, exPID, stick, stick2, myDrive, tableMotor, bottomIn, topIn, io, ioEncoder, ntinst, timer, lift, liftEncoder, exPID2, grab, grabEncoder, grabby, grabbyEncoder)
+    gPos = 0
+    lift.restoreFactoryDefaults()
+    io.restoreFactoryDefaults()
+    return (leftTalon1, leftTalon2, rightTalon1, rightTalon2, leftMotors, rightMotors, gyro, spinPID, balancePID, exPID, stick, stick2, myDrive, tableMotor, bottomIn, topIn, io, ioEncoder, ntinst, timer, lift, liftEncoder, exPID2, grab, grabEncoder, grabby, grabbyEncoder, swP, gPos)
+
+
+"""
+Change Summary:
+
+Brake P Controller for swivel.
+Auton structure laid out + some code to test.
+Cleaned up excessive print statemenets
+Removed old folders of now useless files
+Fixed logic for lift retraction button, incorrect if statement was included
+
+
+TODO:
+Add limits to swivel motor.
+Test + debug autonomous.
+Tune autobalance PID and set to brake mode.
+Retest io motor to check for stalling / whatever that was
+
+
+
+
+"""
