@@ -4,17 +4,18 @@ class PID(object):
     def __init__(self):
         self.inte_last = 0
         self.err_last = 0
-    def main(self, gyro_angle, left_motors, right_motors):
-        Kp = 0.03  #tuning
-        Ki = 0.00  #tuning
-        Kd = 0.0 #tuning
 
-        Sp = 0
+        self.Kp = 0.03  #tuning
+        self.Ki = 0.00  #tuning
+        self.Kd = 0.0 #tuning
+
+
+    def main(self, gyro_angle, left_motors, right_motors, Sp):
 
         err = Sp - gyro_angle
-        prop = Kp * err
-        inte = Ki * (self.inte_last + err * 0.2)
-        deri = Kd * (self.err_last-err / 0.2)
+        prop = self.Kp * err
+        inte = self.Ki * (self.inte_last + err * 0.2)
+        deri = self.Kd * (self.err_last-err / 0.2)
         self.err_last = err
         self.inte_last = inte
 

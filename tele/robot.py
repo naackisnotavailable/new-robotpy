@@ -48,6 +48,8 @@ class Robot(wpilib.TimedRobot):
         self.on = 0
         self.on2 = 0
         self.slowed = 0
+
+
     def autonomousPeriodic(self):
         print('active')
 
@@ -70,12 +72,48 @@ class Robot(wpilib.TimedRobot):
         else:
             self.lift.set(0.0)
         self.grab.set(-0.1)
+
+
+        if self.liftEncoder.getPosition() < -70 and self.grabbyEncoder.getPosition() > 4:
+            print('opening')
+            self.grabby.set(-0.2 + curr)
+        #NEED TO CHECK WHEN EXTENDED, THEN PLACE
+
+        #part 2; move everything back in // NOT WORKING PROBABLY
+
+        if False == True:
+            curr = self.grabby.getOutputCurrent() / 100
+            print('SWIVEL ENCODER: ' + str(self.grabEncoder.getPosition()))
+
+
+            print('running t1')
+            print('closing')
+            self.grabby.set(0.4 - curr)
+            self.io.set(self.exPID.main(self.ioEncoder, True)) # intake moves out
+            print('liftpos: ' + str(self.liftEncoder.getPosition()))
+            self.grab.set(-0.1)
+            if self.grabEncoder.getPosition() < -0.5:
+                print('running t2')
+                if self.liftEncoder.getPosition() < -5: #lift begins moving
+                    print('running t3')
+                    self.lift.set(0.2)
+                else:
+                    self.lift.set(0.0)
+            else:
+                self.lift.set(0.0)
+        
+        # After moving back in, drive directly backward for currently undetermined distance
+        # After leaving community, drive up to charge station and engage PID until end of autonomous
+        if False == True:
+            self.spinPID(self.gyro.getYaw(), self.leftMotors, self.rightMotors, 180)
+
     def teleopPeriodic(self):
         self.slowed = functions.drive(self.leftTalon1,
                                       self.leftTalon2,
                                       self.rightTalon1,
                                       self.rightTalon2,
                                       self.stick, self.myDrive, self.slowed)
+        
         functions.table(self.stick2, self.tableMotor)
         (self.on, self.on2) = functions.intake(self.stick2, self.bottomIn, self.topIn, self.io, self.ioEncoder, self.exPID, self.on, self.on2)
         functions.lift(self.lift, self.liftEncoder, self.extendPID2, self.stick2)
