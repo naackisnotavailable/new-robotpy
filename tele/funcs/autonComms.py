@@ -23,16 +23,22 @@ class moveCm(object):
     def main(self):
             
             rot = self.inches / cc
-        
-            self.ticks = rot * 9650
 
-            self.l1.set(ctre._ctre.ControlMode.Position, self.ticks)
-            self.l2.set(ctre._ctre.ControlMode.Position, self.ticks)
+            err = self.l1.getSelectedSensorPosition() - rot
+            prop = 0.1 * err
+            inte = 0.04 * (self.inte_last + err * 0.2)
+
+            out = prop + inte
+
+            self.l1.set(ctre._ctre.ControlMode.PercentOutput, out)
+            self.l2.set(ctre._ctre.ControlMode.PercentOutput, out)
             
-            self.r1.set(ctre._ctre.ControlMode.Position, self.ticks)
-            self.r2.set(ctre._ctre.ControlMode.Position, self.ticks)
-    def checkCompletion(self, l1, r1):
-        if l1.getSelectedSensorPosition() > self.ticks - 100 and r1.getSelectedSensorPosition() > self.ticks - 100:
+            self.r1.set(ctre._ctre.ControlMode.PercentOutput, out)
+            self.r2.set(ctre._ctre.ControlMode.PercentOutput, out)
+
+
+    def checkCompletion(self):
+        if  self.l1.getSelectedSensorPosition() > self.ticks - 100 and self.r1.getSelectedSensorPosition() > self.ticks - 100:
               return True
         else:
               return False

@@ -65,11 +65,15 @@ class Robot(wpilib.TimedRobot):
 
         self.moveBack1 = aCs.moveCm(self.leftTalon1, self.leftTalon2, self.rightTalon1, self.rightTalon2, -23)
 
+        self.stage1C = False
+
 
     def autonomousPeriodic(self):
-        self.moveBack1.main()
-        if self.moveBack1.checkCompletion == True:
-            self.stage1C = aCs.moveOut(self.grab, self.grabEncoder, self.lift, self.liftEncoder, self.io, self.ioEncoder, self.exPID, self.autonSwiv, self.grabby)
+
+        if self.stage1C == False:
+            self.moveBack1.main()
+            if self.moveBack1.checkCompletion() == True:
+                self.stage1C = aCs.moveOut(self.grab, self.grabEncoder, self.lift, self.liftEncoder, self.io, self.ioEncoder, self.exPID, self.autonSwiv, self.grabby)
         
         if self.stage1C == True:
             aCs.moveIn()
