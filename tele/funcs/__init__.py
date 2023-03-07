@@ -15,6 +15,7 @@ def __init__():
     leftTalon2 = ctre.WPI_TalonFX(6)
     rightTalon1 = ctre.WPI_TalonFX(7)
     rightTalon2 = ctre.WPI_TalonFX(8)
+
     leftTalon1.configFactoryDefault()
     leftTalon2.configFactoryDefault()
     rightTalon1.configFactoryDefault()
@@ -70,7 +71,39 @@ def __init__():
     gPos = 0
     lift.restoreFactoryDefaults()
     io.restoreFactoryDefaults()
-    return (leftTalon1, leftTalon2, rightTalon1, rightTalon2, leftMotors, rightMotors, gyro, spinPID, balancePID, exPID, stick, stick2, myDrive, tableMotor, bottomIn, topIn, io, ioEncoder, ntinst, timer, lift, liftEncoder, exPID2, grab, grabEncoder, grabby, grabbyEncoder, swP, gPos)
+    leftTalon1.setNeutralMode(ctre._ctre.NeutralMode.Brake)
+    leftTalon2.setNeutralMode(ctre._ctre.NeutralMode.Brake)
+    rightTalon1.setNeutralMode(ctre._ctre.NeutralMode.Brake)
+    rightTalon2.setNeutralMode(ctre._ctre.NeutralMode.Brake)
+    return (leftTalon1, 
+            leftTalon2, 
+            rightTalon1, 
+            rightTalon2, 
+            leftMotors, 
+            rightMotors, 
+            gyro, 
+            spinPID, 
+            balancePID, 
+            exPID, 
+            stick, 
+            stick2, 
+            myDrive, 
+            tableMotor, 
+            bottomIn, 
+            topIn, 
+            io, 
+            ioEncoder, 
+            ntinst, 
+            timer, 
+            lift, 
+            liftEncoder, 
+            exPID2, 
+            grab, 
+            grabEncoder, 
+            grabby, 
+            grabbyEncoder, 
+            swP, 
+            gPos)
 
 
 """

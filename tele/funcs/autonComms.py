@@ -3,8 +3,7 @@ import math
 cc = 6*math.pi
 class moveCm(object):
     def __init__(self, l1, l2, r1, r2, inches):
-            self.inches = inches
-            self.ticks = 1
+            self.ticks = inches * 505
 
             self.l1 = l1
             self.l2 = l2
@@ -16,29 +15,20 @@ class moveCm(object):
             self.r1.setSelectedSensorPosition(0, 0, 0)
             self.r2.setSelectedSensorPosition(0, 0, 0)
 
-            self.inte_last = 0
-
 
 
     def main(self):
+            print('current ticks: ' + str(self.ticks))
+            print('v app: ' + str(self.l1.getMotorOutputVoltage()))
+            self.l1.set(ctre._ctre.ControlMode.Position, self.ticks)
+            self.l2.set(ctre._ctre.ControlMode.Position, self.ticks)
             
-            rot = self.inches / cc
-
-            err = self.l1.getSelectedSensorPosition() - rot
-            prop = 0.1 * err
-            inte = 0.04 * (self.inte_last + err * 0.2)
-
-            out = prop + inte
-
-            self.l1.set(ctre._ctre.ControlMode.PercentOutput, out)
-            self.l2.set(ctre._ctre.ControlMode.PercentOutput, out)
-            
-            self.r1.set(ctre._ctre.ControlMode.PercentOutput, out)
-            self.r2.set(ctre._ctre.ControlMode.PercentOutput, out)
+            self.r1.set(ctre._ctre.ControlMode.Position, self.ticks)
+            self.r2.set(ctre._ctre.ControlMode.Position, self.ticks)
 
 
     def checkCompletion(self):
-        if  self.l1.getSelectedSensorPosition() > self.ticks - 100 and self.r1.getSelectedSensorPosition() > self.ticks - 100:
+        if  self.l1.getSelectedSensorPosition() > self.ticks - 100 and self.r1.getSelectedSensorPosition() > self.ticks - 100 and 1 == 0:
               return True
         else:
               return False
@@ -48,7 +38,7 @@ def moveOut(grab, grabEncoder, lift, liftEncoder, io, ioEncoder, exPID, autonSwi
 
     grabby.set(0.55 - curr)  #grab cone
     
-    
+    print('ioEncoder: ' + str(ioEncoder.getPosition()))
     io.set(exPID.main(ioEncoder, True))  #intake out
     
     
@@ -69,6 +59,9 @@ def moveOut(grab, grabEncoder, lift, liftEncoder, io, ioEncoder, exPID, autonSwi
             lift.set(-0.25)
         else:
             lift.set(0.0)
+
+def moveIn():
+     pass
     
 
     
