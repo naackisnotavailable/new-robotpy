@@ -19,6 +19,8 @@ def drive(leftTalon1, leftTalon2, rightTalon1, rightTalon2, stick, drive, slowed
         slowed += 1
     if slowed % 2 == 1:
         lX = stick.getLeftX() * 0.15
+        #Sameer drive if needed
+        #lX = stick.getRightX() * 0.15
         lY = stick.getLeftY() * 0.15
         leftTalon1.setNeutralMode(ctre._ctre.NeutralMode.Brake)
         leftTalon2.setNeutralMode(ctre._ctre.NeutralMode.Brake)
@@ -26,6 +28,8 @@ def drive(leftTalon1, leftTalon2, rightTalon1, rightTalon2, stick, drive, slowed
         rightTalon2.setNeutralMode(ctre._ctre.NeutralMode.Brake)
     else:
         lX = stick.getLeftX()
+        #Sameer drive if needed
+        #lX = stick.getRightX()
         lY = stick.getLeftY()
         leftTalon1.setNeutralMode(ctre._ctre.NeutralMode.Coast)
         leftTalon2.setNeutralMode(ctre._ctre.NeutralMode.Coast)
