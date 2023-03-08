@@ -13,6 +13,8 @@ def setGPos(grabEncoder):
     global gPos
     gPos = grabEncoder.getPosition()
 
+
+#
 def drive(leftTalon1, leftTalon2, rightTalon1, rightTalon2, stick, drive, slowed):
     b = stick.getBButtonPressed()
     if b == True:
