@@ -7,9 +7,9 @@ class PID(object):
         
     def main(self, ioEncoder, set):
         if set == True:
-            Sp = 10.5 #some encoder value
+            Sp = 11.0 #some encoder value
         elif set == False:
-            Sp = 0.0
+            Sp = -0.5
         Kp = 0.15  #tuning
         Ki = 0.0175  #tuning
         Kd = 0.0150 #tuning

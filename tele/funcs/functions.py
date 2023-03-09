@@ -31,10 +31,10 @@ def drive(leftTalon1, leftTalon2, rightTalon1, rightTalon2, stick, drive, slowed
         #Sameer drive if needed
         #lX = stick.getRightX()
         lY = stick.getLeftY()
-        leftTalon1.setNeutralMode(ctre._ctre.NeutralMode.Coast)
-        leftTalon2.setNeutralMode(ctre._ctre.NeutralMode.Coast)
-        rightTalon1.setNeutralMode(ctre._ctre.NeutralMode.Coast)
-        rightTalon2.setNeutralMode(ctre._ctre.NeutralMode.Coast)
+        leftTalon1.setNeutralMode(ctre._ctre.NeutralMode.Brake)
+        leftTalon2.setNeutralMode(ctre._ctre.NeutralMode.Brake)
+        rightTalon1.setNeutralMode(ctre._ctre.NeutralMode.Brake)
+        rightTalon2.setNeutralMode(ctre._ctre.NeutralMode.Brake)
     if lX <= 1.0 and lY <= 1.0:
         drive.curvatureDrive(lX, lY, True)
     else:
@@ -73,7 +73,6 @@ def table(stick2, table):
 def intake(stick2, b, t, io, ioEncoder, exPID, a, c):
     global on1
     global on2
-    print(a, c)
 
     x = stick2.getXButton()
     if x == True:
@@ -113,6 +112,7 @@ def lift(lift, liftEncoder, exPID2, stick2, a, b):
                 spd = 0
 
             lift.set(spd)
+            print('lift pos: ' + str(liftEncoder.getPosition()))
 
             #if spd < 0:
             #    spd = -1*(spd**2)
@@ -131,14 +131,13 @@ def grab(grabby, grab, grabEncoder, stick2, a, b):
         curr = grabby.getOutputCurrent() / 100
         if stick2.getRightY() < -0.1 :
             print('closing')
-            grabby.set(0.4 - curr)
+            grabby.set(0.4)
         elif stick2.getRightY() > 0.1:
             print('opening')
             grabby.set(-0.2 + curr)
 
         if abs(stick2.getRightTriggerAxis()) < 0.01 and abs(stick2.getLeftTriggerAxis()) < 0.01:
             swP.main(grabEncoder.getPosition(), grab, gPos)
-            print('BRAKE ENGAGED')
 
 
         else:
@@ -196,7 +195,7 @@ def moveIn(io, ioEncoder, exPID, grab, grabEncoder, lift, liftEncoder, grabby, s
         io.set(exPID.main(ioEncoder, True)) # intake moves out
         print('liftpos: ' + str(liftEncoder.getPosition()))
 
-        grab.set(-0.1)
+        grab.set(-0.08)
 
         if grabEncoder.getPosition() < -1:
             print('running t2')

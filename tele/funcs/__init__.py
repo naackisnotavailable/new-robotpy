@@ -3,6 +3,7 @@ from navx import AHRS as ahrs
 import wpilib
 import wpilib.drive
 from funcs import autoBalance as balance
+import cscore as cs
 from funcs import spinPID as spin
 import rev
 import ntcore
@@ -21,15 +22,15 @@ def __init__():
     rightTalon1.configFactoryDefault()
     rightTalon2.configFactoryDefault()
 
-    leftTalon1.config_kP(0, 0.05, 0)
-    leftTalon2.config_kP(0, 0.05, 0)
-    leftTalon1.config_kD(0, 0.3, 0)
-    leftTalon2.config_kD(0, 0.3, 0)
+    leftTalon1.config_kP(0, 0.02, 0)
+    leftTalon2.config_kP(0, 0.02, 0)
+    leftTalon1.config_kD(0, 0.25, 0)
+    leftTalon2.config_kD(0, 0.25, 0)
 
-    rightTalon1.config_kP(0, 0.05, 0)
-    rightTalon2.config_kP(0, 0.05, 0)
-    rightTalon1.config_kD(0, 0.3, 0)
-    rightTalon2.config_kD(0, 0.3, 0)
+    rightTalon1.config_kP(0, 0.02, 0)
+    rightTalon2.config_kP(0, 0.02, 0)
+    rightTalon1.config_kD(0, 0.25, 0)
+    rightTalon2.config_kD(0, 0.25, 0)
 
     leftTalon1.configIntegratedSensorInitializationStrategy(ctre.SensorInitializationStrategy.BootToZero, 0)
     leftTalon2.configIntegratedSensorInitializationStrategy(ctre.SensorInitializationStrategy.BootToZero, 0)
@@ -40,7 +41,6 @@ def __init__():
     leftTalon2.configSelectedFeedbackSensor(ctre._ctre.FeedbackDevice.IntegratedSensor, 0)
     rightTalon1.configSelectedFeedbackSensor(ctre._ctre.FeedbackDevice.IntegratedSensor, 0)
     rightTalon2.configSelectedFeedbackSensor(ctre._ctre.FeedbackDevice.IntegratedSensor, 0)
-
     gyro = ahrs.create_spi()
     leftMotors = wpilib.MotorControllerGroup(leftTalon1, leftTalon2)
     rightMotors = wpilib.MotorControllerGroup(rightTalon1, rightTalon2)
@@ -71,6 +71,8 @@ def __init__():
     gPos = 0
     lift.restoreFactoryDefaults()
     io.restoreFactoryDefaults()
+    camera = cs.UsbCamera("usbcam", 0)
+    camera.setVideoMode(cs.VideoMode.PixelFormat.kMJPEG, 320, 240, 30)
     leftTalon1.setNeutralMode(ctre._ctre.NeutralMode.Brake)
     leftTalon2.setNeutralMode(ctre._ctre.NeutralMode.Brake)
     rightTalon1.setNeutralMode(ctre._ctre.NeutralMode.Brake)

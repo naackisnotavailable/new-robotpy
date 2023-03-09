@@ -20,6 +20,7 @@ from funcs import swivelPA
 from funcs import autonComms as aCs
 class Robot(wpilib.TimedRobot):
     def robotInit(self):
+        self.lim = wpilib.DigitalInput(0)
         #self.camera = CameraServer.startAutomaticCapture()
         #self.camera.setResolution(320, 240)
         (self.leftTalon1,
@@ -63,14 +64,57 @@ class Robot(wpilib.TimedRobot):
 
         functions.setGPos(self.grabEncoder)
 
-        self.moveBack1 = aCs.moveCm(self.leftTalon1, self.leftTalon2, self.rightTalon1, self.rightTalon2, 20)
+        self.moveA = aCs.moveCm(self.leftTalon1, self.leftTalon2, self.rightTalon1, self.rightTalon2)
 
-        self.stage1C = False
+        self.stageC = 0
+
+        self.stageCount = 0
+
+        self.tempCount = 0
 
 
     def autonomousPeriodic(self):
-        if self.stage1C == False:
-            self.moveBack1.main()
+        a = ''
+        print(self.stageC)
+        if self.stageC == 0:
+            self.moveA.main(-24)
+
+            if self.moveA.checkCompletion():
+                self.stageC +=1
+
+
+        elif self.stageC == 1:
+            outC = aCs.moveOut(self.grab, self.grabEncoder, self.lift, self.liftEncoder, self.io, self.ioEncoder, self.exPID, self.autonSwiv, self.grabby)
+
+            if outC:
+                self.stageC +=1
+        
+        elif self.stageC == 2:
+            self.moveA.main(2)
+            if self.moveA.checkCompletion() == True:
+                self.tempCount += 1
+                if self.tempCount > 50:
+                    self.grabby.set(-0.3)
+                    self.stageC += 1
+                    aCs.editCompC(2)
+                    self.tempCount = 0
+        elif self.stageC == 3:
+            self.moveA.main(-23)
+            self.tempCount += 1
+            if self.tempCount > 50:
+                aCs.moveIn(self.lift, self.liftEncoder, self.grab, self.grabEncoder, self.grabby, self.io, self.exPID, self.ioEncoder, self.autonSwiv)
+            if self.liftEncoder.getPosition() > -6:
+                self.stageC += 1
+        elif self.stageC == 4:
+            self.moveA.main(-70)
+            
+
+        
+
+
+        #self.spinPID.main(self.gyro.getYaw(), self.leftMotors, self.rightMotors, 0)
+
+
         #    if self.moveBack1.checkCompletion() == True:
         #        self.stage1C = aCs.moveOut(self.grab, self.grabEncoder, self.lift, self.liftEncoder, self.io, self.ioEncoder, self.exPID, self.autonSwiv, self.grabby)
         #
