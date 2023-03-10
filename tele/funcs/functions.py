@@ -6,6 +6,7 @@ swP = swivelP.PID()
 
 on1 = 0
 on2 = 0
+on3 = 0
 
 gPos = 0
 
@@ -42,27 +43,20 @@ def drive(leftTalon1, leftTalon2, rightTalon1, rightTalon2, stick, drive, slowed
     else:
         raise Exception("safety toggle, one or more inputs > 1")
     return slowed
-def balanceCheck(stick, gyro, leftMotors, rightMotors, balancePID, spinPID, timer, on3):
-    if stick.getAButton() == True:
-        if on3 % 2 == 1:
-            if timer < 50:
-                leftMotors.set(0.0)#0.5)
-                rightMotors.set(0.0)#-0.5)
-                time.sleep(0.01)
-                timer += 1
-            if timer >= 50:
-                print('engaged')
-                if abs(gyro.getAngle()) >= 30:
-                    print('spinning: ' + str(gyro.getYaw()))
-                    spinPID.main(gyro.getYaw(), leftMotors, rightMotors)
-                else:
-                    balancePID.main(gyro.getPitch(), leftMotors, rightMotors)
-                    print('balancing: ' + str(gyro.getPitch()))
-                if stick.getAButton() == False:
-                    timer = 0
-        else:
-            on += 1
-    return timer, on3
+def balanceCheck(stick, gyro, leftMotors, rightMotors, balancePID, spinPID):
+    global on3
+    
+    if stick.getAButtonPressed() == True:
+        on3 += 1
+        print('on!')
+
+    if on3 % 2 == 1:
+        balancePID.main(gyro.getPitch(), leftMotors, rightMotors)
+        print('balancing: ' + str(gyro.getPitch()))
+    else:
+        print('off')
+
+
 def getPose(inst):
     return inst.getTable("limelight").getEntry("botpose").getDoubleArray([6])
 def table(stick2, table):
@@ -96,15 +90,9 @@ def intake(stick2, b, t, io, ioEncoder, exPID, a, c):
             io.set(exPID.main(ioEncoder, True))
         else:
             io.set(exPID.main(ioEncoder, False))
-def lift(lift, liftEncoder, exPID2, stick2, a, b):
+def lift(lift, liftEncoder, exPID2, stick2, a, b, lim):
+
     if a == False and b == False:
-        if liftEncoder.getPosition() > 0.1:
-            print('disabled')
-            lift.set(0.0)
-        elif liftEncoder.getPosition() < -105:
-            print('disabled')
-            lift.set(0.0)
-        else:
             spd = stick2.getLeftY()
             if spd < 0:
                 spd = -1*(spd**2)
@@ -112,9 +100,13 @@ def lift(lift, liftEncoder, exPID2, stick2, a, b):
                 spd = spd**2
             else:
                 spd = 0
-
-            lift.set(spd)
-            print('lift pos: ' + str(liftEncoder.getPosition()))
+            if lim == True:
+                if spd > 0:
+                    lift.set(spd)
+                elif spd < 0:
+                    lift.set(0.0)
+            else:
+                lift.set(spd)
 
             #if spd < 0:
             #    spd = -1*(spd**2)
@@ -125,18 +117,20 @@ def lift(lift, liftEncoder, exPID2, stick2, a, b):
             #if stick2.getLeftBumper() == True:
             #    lift.set(exPID2.main(liftEncoder, True))
             #elif stick2.getLeftBumper() == False:
-            #    lift.set(exPID2.main(liftEncoder, False))
+            #    lift.set(exPID2.main(liftEncoder, False)
     
-def grab(grabby, grab, grabEncoder, stick2, a, b):
+def grab(grabby, grabbyEncoder, grab, grabEncoder, stick2, a, b):
     global gPos
     if a == False and b == False:
         curr = grabby.getOutputCurrent() / 100
-        if stick2.getRightY() < -0.1 :
+        if stick2.getRightY() > 0.1 :
             print('closing')
-            grabby.set(0.4)
-        elif stick2.getRightY() > 0.1:
+            #grabby.set(.main(grabbyEncoder.getPosition(), grabby, 0.3))
+            grabby.set(0.6 - curr)
+        elif stick2.getRightY() < -0.1:
             print('opening')
-            grabby.set(-0.2 + curr)
+            #grabby.set(gpi.main(grabbyEncoder.getPosition(), grabby, -2.5))
+            grabby.set(-0.3 + curr)
 
         if abs(stick2.getRightTriggerAxis()) < 0.01 and abs(stick2.getLeftTriggerAxis()) < 0.01:
             swP.main(grabEncoder.getPosition(), grab, gPos)
@@ -154,7 +148,7 @@ def grab(grabby, grab, grabEncoder, stick2, a, b):
             gPos = grabEncoder.getPosition()
 
 
-def moveOut(io, ioEncoder, exPID, grab, grabEncoder, lift, liftEncoder, grabby, stick2):
+def moveOut(io, ioEncoder, exPID, grab, grabEncoder, lift, liftEncoder, grabby, stick2, lim):
     curr = grabby.getOutputCurrent() / 100
     if stick2.getRightBumper() == True:
         global gPos
@@ -168,7 +162,7 @@ def moveOut(io, ioEncoder, exPID, grab, grabEncoder, lift, liftEncoder, grabby, 
         io.set(exPID.main(ioEncoder, True)) # intake moves out
         print('liftpos: ' + str(liftEncoder.getPosition()))
 
-        if liftEncoder.getPosition() > -45: #lift begins moving
+        if liftEncoder.getPosition() > -45 and lim == False: #lift begins moving
             lift.set(-0.4)
         else:
             lift.set(0.0)
@@ -178,7 +172,7 @@ def moveOut(io, ioEncoder, exPID, grab, grabEncoder, lift, liftEncoder, grabby, 
         interrupted = False
     return interrupted
 
-def moveIn(io, ioEncoder, exPID, grab, grabEncoder, lift, liftEncoder, grabby, stick2):
+def moveIn(io, ioEncoder, exPID, grab, grabEncoder, lift, liftEncoder, grabby, stick2, lim):
     global gPos
     curr = grabby.getOutputCurrent() / 100
 
@@ -202,7 +196,7 @@ def moveIn(io, ioEncoder, exPID, grab, grabEncoder, lift, liftEncoder, grabby, s
         if grabEncoder.getPosition() < -1:
             print('running t2')
 
-            if liftEncoder.getPosition() < -5: #lift begins moving
+            if liftEncoder.getPosition() < -5 and lim == False: #lift begins moving
                 print('running t3')
                 lift.set(0.4)
             else:

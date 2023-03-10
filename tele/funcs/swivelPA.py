@@ -8,17 +8,17 @@ class PID(object):
 
     def main(self, pos, swivel, Sp):
         if pos < 6:
-            self.Kp = 0.0075  #tuning
+            self.Kp = 0.0085  #tuning
             self.Ki = 0.008 #tuning
             self.Kd = 0.0075 #tuning
         elif pos < 9.5:
-            self.Kp = 0.02  #tuning
-            self.Ki = 0.0175 #tuning
+            self.Kp = 0.03  #tuning
+            self.Ki = 0.0215 #tuning
             self.Kd = 0.01 #tuning
         else:
-            self.Kp = 0.03  #tuning
-            self.Ki = 0.02 #tuning
-            self.Kd = 0.03 #tuning
+            self.Kp = 0.0335  #tuning
+            self.Ki = 0.027 #tuning
+            self.Kd = 0.0285 #tuning
             
 
         err = Sp - pos

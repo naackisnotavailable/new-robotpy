@@ -10,6 +10,7 @@ import ntcore
 from funcs import extendPID as ex
 from funcs import extendPID2 as ex2
 from funcs import swivelP
+from funcs import grabbyPI as gPI
 
 def __init__():
     leftTalon1 = ctre.WPI_TalonFX(5)
@@ -48,11 +49,13 @@ def __init__():
     balancePID = balance.PID()
     exPID = ex.PID()
     exPID2 = ex2.PID()
+    gpi = gPI.PID()
     swP = swivelP.PID()
     stick = wpilib.XboxController(0)
     stick2 = wpilib.XboxController(1)
     myDrive = wpilib.drive.DifferentialDrive(leftMotors, rightMotors)
     myDrive.setDeadband(0.03)
+
     grab = rev.CANSparkMax(14, rev.CANSparkMax.MotorType.kBrushless)
     grabEncoder = grab.getEncoder()
     grabby = rev.CANSparkMax(4, rev.CANSparkMax.MotorType.kBrushless)
@@ -62,6 +65,7 @@ def __init__():
     topIn = rev.CANSparkMax(11, rev.CANSparkMax.MotorType.kBrushless)
     io = rev.CANSparkMax(3, rev.CANSparkMax.MotorType.kBrushless)
     lift = rev.CANSparkMax(12, rev.CANSparkMax.MotorType.kBrushless)
+
     liftEncoder = lift.getEncoder()
     ntinst = ntcore._ntcore.NetworkTableInstance.getDefault()
     ioEncoder = io.getEncoder()
@@ -74,6 +78,7 @@ def __init__():
     camera = cs.UsbCamera("usbcam", 0)
     camera.setVideoMode(cs.VideoMode.PixelFormat.kMJPEG, 320, 240, 30)
     leftTalon1.setNeutralMode(ctre._ctre.NeutralMode.Brake)
+    
     leftTalon2.setNeutralMode(ctre._ctre.NeutralMode.Brake)
     rightTalon1.setNeutralMode(ctre._ctre.NeutralMode.Brake)
     rightTalon2.setNeutralMode(ctre._ctre.NeutralMode.Brake)
@@ -105,7 +110,8 @@ def __init__():
             grabby, 
             grabbyEncoder, 
             swP, 
-            gPos)
+            gPos, 
+            gpi)
 
 
 """

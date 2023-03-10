@@ -52,6 +52,12 @@ class moveCm(object):
             else:
                   return False
         
+        elif compC == 2:
+            if self.r1.getSelectedSensorPosition() < -10000 and self.r1.getMotorOutputVoltage() < 0.05:
+                return True
+            else:
+                return False
+        
 
             
              
@@ -65,7 +71,7 @@ def moveOut(grab, grabEncoder, lift, liftEncoder, io, ioEncoder, exPID, autonSwi
         curr = grabby.getOutputCurrent() / 100
 
 
-        grabby.set(0.55)  #grab cone
+        grabby.set(0.6 - curr)  #grab cone
 
         print('ioEncoder: ' + str(ioEncoder.getPosition()))
         io.set(exPID.main(ioEncoder, True))  #intake out
@@ -81,7 +87,7 @@ def moveOut(grab, grabEncoder, lift, liftEncoder, io, ioEncoder, exPID, autonSwi
             grab.set(-0.125)
         else:
             if grabEncoder.getPosition() < 17:
-                autonSwiv.main(grabEncoder.getPosition(), grab, 16)
+                autonSwiv.main(grabEncoder.getPosition(), grab, 19)
             else:
                 grab.set(0.07)
 
@@ -95,10 +101,11 @@ def moveOut(grab, grabEncoder, lift, liftEncoder, io, ioEncoder, exPID, autonSwi
     
 
 def moveIn(lift, liftEncoder, grab, grabEncoder, grabby, io, exPID, ioEncoder, autonSwiv):
+    curr = grabby.getOutputCurrent() / 100
     io.set(exPID.main(ioEncoder, True)) # intake moves out
     print('liftpos: ' + str(liftEncoder.getPosition()))
     grab.set(-0.09)
-    grabby.set(0.15)
+    grabby.set(0.4 - curr)
     if grabEncoder.getPosition() < -0.5:
         print('running t2')
         if liftEncoder.getPosition() < -8: #lift begins moving
@@ -115,34 +122,3 @@ def moveIn(lift, liftEncoder, grab, grabEncoder, grabby, io, exPID, ioEncoder, a
 def editCompC(v):
     global compC
     compC = v
-
-
-
-
-
-
-
-
-
-
-
-#
-        #    
-#
-#
-#
-        #if liftEncoder.getPosition() < -70 and grabbyEncoder.getPosition() > 4:
-        #    print('opening')
-        #    grabby.set(-0.2 + curr)
-#
-#
-        ##NEED TO CHECK WHEN EXTENDED, THEN PLACE
-#
-        ##part 2; move everything back in // NOT WORKING PROBABLY
-#
-        
-        #
-        ## After moving back in, drive directly backward for currently undetermined distance
-        ## After leaving community, drive up to charge station and engage PID until end of autonomous
-        #if False == True:
-        #    spinPID(gyro.getYaw(), leftMotors, rightMotors, 180)
