@@ -21,29 +21,31 @@ def drive(leftTalon1, leftTalon2, rightTalon1, rightTalon2, stick, drive, slowed
     if b == True:
         slowed += 1
     if slowed % 2 == 1:
-        lX = stick.getLeftX() * 0.15
+        lX = stick.getLeftX() * 0.25
         #Sameer drive if needed
         #lX = stick.getRightX() * 0.15
-        lY = stick.getLeftY() * 0.15
+        lY = stick.getLeftY() * 0.25
         leftTalon1.setNeutralMode(ctre._ctre.NeutralMode.Brake)
         leftTalon2.setNeutralMode(ctre._ctre.NeutralMode.Brake)
         rightTalon1.setNeutralMode(ctre._ctre.NeutralMode.Brake)
         rightTalon2.setNeutralMode(ctre._ctre.NeutralMode.Brake)
     else:
-        lX = stick.getLeftX()
+        lX = stick.getLeftX() * 0.7
         #Sameer drive if needed
         #lX = stick.getRightX()
-        lY = stick.getLeftY()
-        leftTalon1.setNeutralMode(ctre._ctre.NeutralMode.Brake)
-        leftTalon2.setNeutralMode(ctre._ctre.NeutralMode.Brake)
-        rightTalon1.setNeutralMode(ctre._ctre.NeutralMode.Brake)
-        rightTalon2.setNeutralMode(ctre._ctre.NeutralMode.Brake)
+        lY = stick.getLeftY() * 0.7
+
+        leftTalon1.setNeutralMode(ctre._ctre.NeutralMode.Coast)
+        leftTalon2.setNeutralMode(ctre._ctre.NeutralMode.Coast)
+        rightTalon1.setNeutralMode(ctre._ctre.NeutralMode.Coast)
+        rightTalon2.setNeutralMode(ctre._ctre.NeutralMode.Coast)
+
     if lX <= 1.0 and lY <= 1.0:
         drive.curvatureDrive(lX, lY, True)
     else:
         raise Exception("safety toggle, one or more inputs > 1")
     return slowed
-def balanceCheck(stick, gyro, leftMotors, rightMotors, balancePID, spinPID):
+def balanceCheck(l1, l2, r1, r2, stick, gyro, leftMotors, rightMotors, balancePID, spinPID):
     global on3
     
     if stick.getAButtonPressed() == True:
@@ -51,10 +53,22 @@ def balanceCheck(stick, gyro, leftMotors, rightMotors, balancePID, spinPID):
         print('on!')
 
     if on3 % 2 == 1:
+
+        l1.setNeutralMode(ctre._ctre.NeutralMode.Brake)
+        l2.setNeutralMode(ctre._ctre.NeutralMode.Brake)
+        r1.setNeutralMode(ctre._ctre.NeutralMode.Brake)
+        r2.setNeutralMode(ctre._ctre.NeutralMode.Brake)
+
+
         balancePID.main(gyro.getPitch(), leftMotors, rightMotors)
         print('balancing: ' + str(gyro.getPitch()))
     else:
         print('off')
+
+        l1.setNeutralMode(ctre._ctre.NeutralMode.Coast)
+        l2.setNeutralMode(ctre._ctre.NeutralMode.Coast)
+        r1.setNeutralMode(ctre._ctre.NeutralMode.Coast)
+        r2.setNeutralMode(ctre._ctre.NeutralMode.Coast)
 
 
 def getPose(inst):

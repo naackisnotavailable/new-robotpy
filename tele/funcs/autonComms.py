@@ -44,7 +44,7 @@ class moveCm(object):
                   return False
         
         elif compC == 1:
-            if self.r1.getSelectedSensorPosition() > -450:
+            if self.r1.getSelectedSensorPosition() > -950:
                 lastPos = self.r1.getSelectedSensorPosition()
                 return True
             
@@ -104,13 +104,20 @@ def moveIn(lift, liftEncoder, grab, grabEncoder, grabby, io, exPID, ioEncoder, a
     curr = grabby.getOutputCurrent() / 100
     io.set(exPID.main(ioEncoder, True)) # intake moves out
     print('liftpos: ' + str(liftEncoder.getPosition()))
-    grab.set(-0.09)
+
+    
+    if grabEncoder.getPosition() > 0:
+        grab.set(-0.15)
+    if grabEncoder.getPosition() < 0:
+        grab.set(-0.09)
+
+
     grabby.set(0.4 - curr)
     if grabEncoder.getPosition() < -0.5:
         print('running t2')
         if liftEncoder.getPosition() < -8: #lift begins moving
             print('running t3')
-            lift.set(0.45)
+            lift.set(0.55)
         else:
             lift.set(0.0)
     else:

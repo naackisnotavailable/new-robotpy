@@ -77,11 +77,17 @@ def __init__():
     io.restoreFactoryDefaults()
     camera = cs.UsbCamera("usbcam", 0)
     camera.setVideoMode(cs.VideoMode.PixelFormat.kMJPEG, 320, 240, 30)
+
     leftTalon1.setNeutralMode(ctre._ctre.NeutralMode.Brake)
-    
     leftTalon2.setNeutralMode(ctre._ctre.NeutralMode.Brake)
     rightTalon1.setNeutralMode(ctre._ctre.NeutralMode.Brake)
     rightTalon2.setNeutralMode(ctre._ctre.NeutralMode.Brake)
+
+    leftTalon1.configSupplyCurrentLimit(ctre.SupplyCurrentLimitConfiguration(True, 30, 25, 1), 0)
+    leftTalon2.configSupplyCurrentLimit(ctre.SupplyCurrentLimitConfiguration(True, 30, 25, 1), 0)
+    rightTalon1.configSupplyCurrentLimit(ctre.SupplyCurrentLimitConfiguration(True, 30, 25, 1), 0)
+    rightTalon2.configSupplyCurrentLimit(ctre.SupplyCurrentLimitConfiguration(True, 30, 25, 1), 0)
+
     return (leftTalon1, 
             leftTalon2, 
             rightTalon1, 
