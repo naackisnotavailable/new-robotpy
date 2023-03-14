@@ -1,5 +1,4 @@
 # auton go back 29 and then forward to 20 to place
-
 import wpilib
 
 from wpilib.drive import DifferentialDrive
@@ -19,11 +18,22 @@ from funcs import spinPID as spinPID
 from funcs import __init__ as initialize
 from funcs import swivelPA
 from funcs import autonComms as aCs
+import commands2 as cmds
+import commands2.cmd
+from robotcontainer import RobotContainer
+from wpimath import trajectory
+from wpimath import geometry as geo
+from wpimath import controller
+from wpimath import kinematics as kine
+
+from subsystems import drivetrain
+
 
 
 class Robot(wpilib.TimedRobot):
     def robotInit(self):
         self.lim = wpilib.DigitalInput(0)
+        
 
         #self.camera = CameraServer.startAutomaticCapture()
         #self.camera.setResolution(320, 240)
@@ -77,165 +87,52 @@ class Robot(wpilib.TimedRobot):
 
         functions.setGPos(self.grabEncoder)
 
-        self.moveA = aCs.moveCm(self.leftTalon1, self.leftTalon2, self.rightTalon1, self.rightTalon2)
+        self.container = RobotContainer(self.gyro)
 
-        self.stageC = 0
+        self.traject = trajectory.TrajectoryGenerator().generateTrajectory(
+            start= geo.Pose2d(geo.Translation2d(0, 0), geo.Rotation2d(0, 0)),
+            interiorWaypoints= [geo.Translation2d(1, 0)],
+            end= geo.Pose2d(geo.Translation2d(1, 0), geo.Rotation2d(0, 0)),
+            config= trajectory.TrajectoryConfig(0.4, 2),
+        )
+        self.ramsete = controller.RamseteController()
 
-        self.stageCount = 0
+        self.timer = wpilib.Timer()
 
-        self.tempCount = 0
+        self.kinematic = kine.DifferentialDriveKinematics(0.544)
+        self.compressor = wpilib.Compressor(0, wpilib.PneumaticsModuleType.REVPH) # if not working, change module id?
+        self.compressor.enableDigital()
+        self.solenoid = wpilib.Solenoid(0, wpilib.PneumaticsModuleType.REVPH, 0)  #if not working, change module id?
+    
+    def disabledPeriodic(self) -> None:
+        print('compressor pressure: ' + str(self.compressor.getPressure()))
+        print('compressor current' + str(self.compressor.getCurrent()))
 
+    def autonomousInit(self) -> None:
+        self.timer.reset()
+        self.dt = drivetrain.Drivetrain(self.gyro)
+        self.dt.resetOdometry(geo.Pose2d(0, 0, 0))
+        self.dt.resetEncoders()
+        #"""This autonomous runs the autonomous command selected by your RobotContainer class."""
+        #self.autonomousCommand = self.container.getAutonomousCommand()
+#
+        #if self.autonomousCommand:
+        #    self.autonomousCommand.schedule()
+        self.timer.start()
+        pass
 
-        #auton 0: place and exit community; MAKE SURE TO NOT BE BEHIND CHARGE STATION (PLEASE) RED
-        ##auton 1: place and balance to charge station
-        ##auton 2: drive immediately out of community ; SETUP FACING FORWARD
-        #auton 3: wall side RED
-        self.auton = 0
+    def autonomousPeriodic(self) -> None:
+        t = self.timer.get()
+        self.currentPose = self.dt.getPose()
+        self.dt.periodic()
 
-
-    def autonomousPeriodic(self):
-        print('autonomous stage: ' + str(self.stageC))
-        if self.auton == 0:
-
-            if self.stageC == 0:
-                self.moveA.main(-24)
-
-                if self.moveA.checkCompletion():
-                    self.stageC +=1
-
-
-            elif self.stageC == 1:
-                outC = aCs.moveOut(self.grab, self.grabEncoder, self.lift, self.liftEncoder, self.io, self.ioEncoder, self.exPID, self.autonSwiv, self.grabby)
-
-                if outC:
-                    self.stageC +=1
-
-            elif self.stageC == 2:
-                self.moveA.main(1)
+        self.desiredPose = self.traject.sample(t)
+        self.output = self.ramsete.calculate(self.currentPose, self.desiredPose)
             
-
-                if self.tempCount > 90:
-                    self.grabby.set(-0.3)
-                    if self.tempCount > 110:
-                        
-                        self.stageC += 1
-                        aCs.editCompC(2)
-                        self.tempCount = 0
-                    else:
-                        self.tempCount += 1
-                else:
-                    self.tempCount += 1
+        self.wheelSpeeds = self.kinematic.toWheelSpeeds(self.output)
+        self.wheelSpeeds.desaturate(0.8)
 
 
-            elif self.stageC == 3:
-                self.moveA.main(-23)
-                self.tempCount += 1
-                if self.tempCount > 50:
-                    aCs.moveIn(self.lift, self.liftEncoder, self.grab, self.grabEncoder, self.grabby, self.io, self.exPID, self.ioEncoder, self.autonSwiv)
-                if self.liftEncoder.getPosition() > -6:
-                    self.stageC += 1
-            elif self.stageC == 4:
-                self.leftMotors.set(-0.45)
-                self.rightMotors.set(0.5)
-                if self.leftTalon1.getSelectedSensorPosition() < -60000:
-                    self.stageC += 1
-
-            elif self.stageC == 5:
-                self.leftMotors.set(0.0)
-                self.rightMotors.set(0.0)
-        
-        if self.auton == 1:
-            if self.stageC == 0:
-                self.moveA.main(-24)
-
-                if self.moveA.checkCompletion():
-                    self.stageC +=1
-
-
-            elif self.stageC == 1:
-                outC = aCs.moveOut(self.grab, self.grabEncoder, self.lift, self.liftEncoder, self.io, self.ioEncoder, self.exPID, self.autonSwiv, self.grabby)
-
-                if outC:
-                    self.stageC +=1
-
-            elif self.stageC == 2:
-                self.moveA.main(2)
-                if self.moveA.checkCompletion() == True:
-                    self.tempCount += 1
-                if self.tempCount >= 1:
-                    if self.tempCount > 50:
-                        self.grabby.set(-0.3)
-                        if self.tempCount > 80:
-                            
-                            self.stageC += 1
-                            aCs.editCompC(2)
-                            self.tempCount = 0
-                    else:
-                        self.tempCount += 1
-            elif self.stageC == 3:
-                self.moveA.main(-23)
-                self.tempCount += 1
-                if self.tempCount > 50:
-                    aCs.moveIn(self.lift, self.liftEncoder, self.grab, self.grabEncoder, self.grabby, self.io, self.exPID, self.ioEncoder, self.autonSwiv)
-                if self.liftEncoder.getPosition() > -6:
-                    self.stageC += 1
-            elif self.stageC == 4:
-                self.leftMotors.set(-0.55)
-                self.rightMotors.set(0.55)
-                if self.leftTalon1.getSelectedSensorPosition() < -40000:
-                    self.stageC += 1
-
-            elif self.stageC == 5:
-                print('balance engaged')
-                self.balancePID.main(self.gyro.getPitch(), self.leftMotors, self.rightMotors)
-
-
-
-        if self.auton == 2:
-            self.moveA.main(150)
-        
-
-        if self.auton == 3:
-
-            if self.stageC == 0:
-                self.moveA.main(-24)
-
-                if self.moveA.checkCompletion():
-                    self.stageC +=1
-
-
-            elif self.stageC == 1:
-                outC = aCs.moveOut(self.grab, self.grabEncoder, self.lift, self.liftEncoder, self.io, self.ioEncoder, self.exPID, self.autonSwiv, self.grabby)
-
-                if outC:
-                    self.stageC +=1
-
-            elif self.stageC == 2:
-                self.moveA.main(1)
-            
-
-                if self.tempCount > 90:
-                    self.grabby.set(-0.3)
-                    if self.tempCount > 110:
-                        
-                        self.stageC += 1
-                        aCs.editCompC(2)
-                        self.tempCount = 0
-                else:
-                    self.tempCount += 1
-
-
-            elif self.stageC == 3:
-                self.moveA.main(-23)
-                self.tempCount += 1
-                if self.tempCount > 50:
-                    aCs.moveIn(self.lift, self.liftEncoder, self.grab, self.grabEncoder, self.grabby, self.io, self.exPID, self.ioEncoder, self.autonSwiv)
-                if self.liftEncoder.getPosition() > -6:
-                    self.stageC += 1
-            elif self.stageC == 4:
-                self.leftMotors.set(0.0)
-                self.rightMotors.set(0.0)
-        
             
         
     def teleopInit(self):
@@ -248,6 +145,11 @@ class Robot(wpilib.TimedRobot):
 
 
     def teleopPeriodic(self):
+        a = self.stick.getYButtonPressed()
+        if a == True:
+            self.solenoid.toggle()
+
+
         liftLimit = self.lim.get()
 
         self.slowed = functions.drive(self.leftTalon1,
