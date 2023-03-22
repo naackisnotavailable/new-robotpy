@@ -25,20 +25,11 @@ def drive(leftTalon1, leftTalon2, rightTalon1, rightTalon2, stick, drive, slowed
         #Sameer drive if needed
         #lX = stick.getRightX() * 0.15
         lY = stick.getLeftY() * 0.25
-        leftTalon1.setNeutralMode(ctre._ctre.NeutralMode.Brake)
-        leftTalon2.setNeutralMode(ctre._ctre.NeutralMode.Brake)
-        rightTalon1.setNeutralMode(ctre._ctre.NeutralMode.Brake)
-        rightTalon2.setNeutralMode(ctre._ctre.NeutralMode.Brake)
     else:
         lX = stick.getLeftX() * 0.7
         #Sameer drive if needed
         #lX = stick.getRightX()
         lY = stick.getLeftY() * 0.7
-
-        leftTalon1.setNeutralMode(ctre._ctre.NeutralMode.Coast)
-        leftTalon2.setNeutralMode(ctre._ctre.NeutralMode.Coast)
-        rightTalon1.setNeutralMode(ctre._ctre.NeutralMode.Coast)
-        rightTalon2.setNeutralMode(ctre._ctre.NeutralMode.Coast)
 
     if lX <= 1.0 and lY <= 1.0:
         drive.curvatureDrive(lX, lY, True)
@@ -54,21 +45,11 @@ def balanceCheck(l1, l2, r1, r2, stick, gyro, leftMotors, rightMotors, balancePI
 
     if on3 % 2 == 1:
 
-        l1.setNeutralMode(ctre._ctre.NeutralMode.Brake)
-        l2.setNeutralMode(ctre._ctre.NeutralMode.Brake)
-        r1.setNeutralMode(ctre._ctre.NeutralMode.Brake)
-        r2.setNeutralMode(ctre._ctre.NeutralMode.Brake)
-
 
         balancePID.main(gyro.getPitch(), leftMotors, rightMotors)
         print('balancing: ' + str(gyro.getPitch()))
     else:
         print('off')
-
-        l1.setNeutralMode(ctre._ctre.NeutralMode.Coast)
-        l2.setNeutralMode(ctre._ctre.NeutralMode.Coast)
-        r1.setNeutralMode(ctre._ctre.NeutralMode.Coast)
-        r2.setNeutralMode(ctre._ctre.NeutralMode.Coast)
 
 
 def getPose(inst):
@@ -181,7 +162,7 @@ def moveOut(io, ioEncoder, exPID, grab, grabEncoder, lift, liftEncoder, grabby, 
         else:
             lift.set(0.0)
 
-        grab.set(-0.1)
+        grab.set(-0.08)
     else:
         interrupted = False
     return interrupted
@@ -205,7 +186,7 @@ def moveIn(io, ioEncoder, exPID, grab, grabEncoder, lift, liftEncoder, grabby, s
         io.set(exPID.main(ioEncoder, True)) # intake moves out
         print('liftpos: ' + str(liftEncoder.getPosition()))
 
-        grab.set(-0.08)
+        grab.set(-0.065)
 
         if grabEncoder.getPosition() < -1:
             print('running t2')

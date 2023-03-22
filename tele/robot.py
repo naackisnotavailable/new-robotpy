@@ -100,13 +100,6 @@ class Robot(wpilib.TimedRobot):
         self.timer = wpilib.Timer()
 
         self.kinematic = kine.DifferentialDriveKinematics(0.544)
-        self.compressor = wpilib.Compressor(0, wpilib.PneumaticsModuleType.REVPH) # if not working, change module id?
-        self.compressor.enableDigital()
-        self.solenoid = wpilib.Solenoid(0, wpilib.PneumaticsModuleType.REVPH, 0)  #if not working, change module id?
-    
-    def disabledPeriodic(self) -> None:
-        print('compressor pressure: ' + str(self.compressor.getPressure()))
-        print('compressor current' + str(self.compressor.getCurrent()))
 
     def autonomousInit(self) -> None:
         self.timer.reset()
@@ -138,17 +131,8 @@ class Robot(wpilib.TimedRobot):
     def teleopInit(self):
         functions.setGPos(self.grabEncoder)
 
-        self.leftTalon1.setNeutralMode(ctre._ctre.NeutralMode.Coast)
-        self.leftTalon2.setNeutralMode(ctre._ctre.NeutralMode.Coast)
-        self.rightTalon1.setNeutralMode(ctre._ctre.NeutralMode.Coast)
-        self.rightTalon2.setNeutralMode(ctre._ctre.NeutralMode.Coast)
-
 
     def teleopPeriodic(self):
-        a = self.stick.getYButtonPressed()
-        if a == True:
-            self.solenoid.toggle()
-
 
         liftLimit = self.lim.get()
 
@@ -171,27 +155,6 @@ class Robot(wpilib.TimedRobot):
 
         functions.balanceCheck(self.leftTalon1, self.leftTalon2, self.rightTalon1, self.rightTalon2, self.stick, self.gyro, self.leftMotors, self.rightMotors, self.balancePID, self.spinPID)
         functions.lift(self.lift, self.liftEncoder, self.extendPID2, self.stick2, self.interrupted, self.interrupted1, liftLimit)
-
-        self.lheat = (self.leftTalon1.getTemperature() + self.leftTalon2.getTemperature()) / 2
-
-
-        self.lheat1 = self.leftTalon1.getTemperature()
-        self.lheat2 = self.leftTalon2.getTemperature()
-
-
-        self.rheat = (self.rightTalon1.getTemperature() + self.rightTalon2.getTemperature()) / 2
-
-        self.rheat1 = self.rightTalon1.getTemperature()
-        self.rheat2 = self.rightTalon2.getTemperature()
-
-
-        print('left1 heat: ' + str(self.lheat1))
-        print('left2 heat: ' + str(self.lheat2))
-
-        #print('right heat: ' + str(self.rheat))
-
-        print('right1 heat: ' + str(self.rheat1))
-        print('right2 heat: ' + str(self.rheat2))
 
 
 if __name__ == "__main__":
