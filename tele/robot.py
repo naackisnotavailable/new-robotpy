@@ -10,8 +10,8 @@ import wpilib.interfaces
 import time
 from navx import AHRS as ahrs
 from wpimath import geometry as geo
-from cscore import CameraServer
-import cscore as cs
+#from cscore import CameraServer
+#import cscore as cs
 from funcs import functions
 from funcs import autoBalance as balancePID
 from funcs import spinPID as spinPID 
