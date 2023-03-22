@@ -3,7 +3,7 @@ from navx import AHRS as ahrs
 import wpilib
 import wpilib.drive
 from funcs import autoBalance as balance
-import cscore as cs
+#import cscore as cs
 from funcs import spinPID as spin
 import rev
 import ntcore
@@ -60,8 +60,11 @@ def __init__():
     gPos = 0
     lift.restoreFactoryDefaults()
     io.restoreFactoryDefaults()
-    camera = cs.UsbCamera("usbcam", 0)
-    camera.setVideoMode(cs.VideoMode.PixelFormat.kMJPEG, 320, 240, 30)
+
+    wpilib.CameraServer.launch()
+
+    #camera = cs.UsbCamera("usbcam", 0)
+    #camera.setVideoMode(cs.VideoMode.PixelFormat.kMJPEG, 320, 240, 30)
 
     return (leftMotor1, 
             leftMotor2, 
