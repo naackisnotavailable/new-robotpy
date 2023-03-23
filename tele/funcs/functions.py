@@ -115,17 +115,17 @@ def lift(lift, liftEncoder, exPID2, stick2, a, b, lim):
             #    lift.set(exPID2.main(liftEncoder, False)
     
 def grab(grabby, grabbyEncoder, grab, grabEncoder, stick2, a, b):
-    global gPos
+    global gPos#FUCK YOU WHAT THE HELL IS THIS CODE
     if a == False and b == False:
         curr = grabby.getOutputCurrent() / 100
         if stick2.getRightY() > 0.1 :
             print('closing')
             #grabby.set(.main(grabbyEncoder.getPosition(), grabby, 0.3))
-            grabby.set(0.6 - curr)
+            grabby.set(0.6 - curr)#pre 0.6
         elif stick2.getRightY() < -0.1:
             print('opening')
             #grabby.set(gpi.main(grabbyEncoder.getPosition(), grabby, -2.5))
-            grabby.set(-0.3 + curr)
+            grabby.set(-0.3 + curr)#pre -0.3
 
         if abs(stick2.getRightTriggerAxis()) < 0.01 and abs(stick2.getLeftTriggerAxis()) < 0.01:
             swP.main(grabEncoder.getPosition(), grab, gPos)
@@ -134,10 +134,10 @@ def grab(grabby, grabbyEncoder, grab, grabEncoder, stick2, a, b):
         else:
             if stick2.getLeftTriggerAxis() > 0.1:
                 print('down')
-                grab.set(-0.5*(stick2.getLeftTriggerAxis()**2))
+                grab.set(-0.3*(stick2.getLeftTriggerAxis()**2))
             elif stick2.getRightTriggerAxis() > 0.1:
                 print('up')
-                grab.set(0.5*stick2.getRightTriggerAxis()**2)
+                grab.set(0.3*stick2.getRightTriggerAxis()**2)#pre .5
             else:
                 grab.set(0.0)
             gPos = grabEncoder.getPosition()
