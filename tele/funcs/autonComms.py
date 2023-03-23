@@ -20,13 +20,13 @@ class moveCm(object):
             
 
 
-    def main(self, inches):
-            self.ticks = inches * 497
-            self.l1.set(ctre._ctre.ControlMode.Position, self.ticks)
-            self.l2.set(ctre._ctre.ControlMode.Position, self.ticks)
-            
-            self.r1.set(ctre._ctre.ControlMode.Position, -self.ticks)
-            self.r2.set(ctre._ctre.ControlMode.Position, -self.ticks)
+   # def main(self, inches):
+   #         self.ticks = inches * 497
+   #         self.l1.set(ctre._ctre.ControlMode.Position, self.ticks)
+   #         self.l2.set(ctre._ctre.ControlMode.Position, self.ticks)
+   #         
+   #         self.r1.set(ctre._ctre.ControlMode.Position, -self.ticks)
+   #         self.r2.set(ctre._ctre.ControlMode.Position, -self.ticks)
 
 
     
