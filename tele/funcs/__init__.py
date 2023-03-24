@@ -46,6 +46,8 @@ def __init__():
     io = rev.CANSparkMax(11, rev.CANSparkMax.MotorType.kBrushless)
     grabby = rev.CANSparkMax(12, rev.CANSparkMax.MotorType.kBrushless)
 
+    led = wpilib.Spark(0)
+
 
     grabEncoder = grab.getEncoder()
     grabbyEncoder = grabby.getEncoder()
@@ -62,6 +64,8 @@ def __init__():
     io.restoreFactoryDefaults()
 
     wpilib.CameraServer.launch()
+
+    
 
     #camera = cs.UsbCamera("usbcam", 0)
     #camera.setVideoMode(cs.VideoMode.PixelFormat.kMJPEG, 320, 240, 30)
@@ -95,7 +99,8 @@ def __init__():
             grabbyEncoder, 
             swP, 
             gPos, 
-            gpi)
+            gpi,
+            led)
 
 
 """
