@@ -30,12 +30,12 @@ class RobotContainer:
     The structure (commands, subsystems, and button mappings) should be done here.
     """
 
-    def __init__(self, gyro):
+    def __init__(self, gyro, m1, m2, m3, m4):
         # Create the driver's controller.
         self.driverController = XboxController(constants.kDriverControllerPort)
 
         # Create an instance of the drivetrain subsystem.
-        self.robotDrive = Drivetrain(gyro)
+        self.robotDrive = Drivetrain(gyro, m1, m2, m3, m4)
 
         # Configure and set the button bindings for the driver's controller.
         self.configureButtons()

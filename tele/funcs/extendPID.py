@@ -1,5 +1,4 @@
 import time
-import ctre
 class PID(object):
     def __init__(self):
         self.inte_last = 0

@@ -1,4 +1,3 @@
-import ctre
 from navx import AHRS as ahrs
 import wpilib
 import wpilib.drive
@@ -46,7 +45,7 @@ def __init__():
     io = rev.CANSparkMax(11, rev.CANSparkMax.MotorType.kBrushless)
     grabby = rev.CANSparkMax(12, rev.CANSparkMax.MotorType.kBrushless)
 
-    led = wpilib.Spark(0)
+    #led = wpilib.Spark(0)
 
 
     grabEncoder = grab.getEncoder()
@@ -99,8 +98,7 @@ def __init__():
             grabbyEncoder, 
             swP, 
             gPos, 
-            gpi,
-            led)
+            gpi) # bro
 
 
 """

@@ -3,7 +3,6 @@ import wpilib
 
 from wpilib.drive import DifferentialDrive
 import wpilib.drive
-import ctre
 import rev
 import ntcore
 import wpilib.interfaces
@@ -17,16 +16,15 @@ from funcs import autoBalance as balancePID
 from funcs import spinPID as spinPID 
 from funcs import __init__ as initialize
 from funcs import swivelPA
-from funcs import autonComms as aCs
 import commands2 as cmds
 import commands2.cmd
-from robotcontainer import RobotContainer
+#from robotcontainer import RobotContainer
 from wpimath import trajectory
 from wpimath import geometry as geo
 from wpimath import controller
 from wpimath import kinematics as kine
 
-from subsystems import drivetrain
+#from subsystems import drivetrain
 
 
 
@@ -74,7 +72,8 @@ class Robot(wpilib.TimedRobot):
          self.grabbyEncoder,
          self.swP,
          self.gPos,
-         self.gpi) = initialize()
+         self.gpi,
+         self.leds) = initialize()
         self.on = 0
         self.on2 = 0
         self.on3 = 0
@@ -87,7 +86,7 @@ class Robot(wpilib.TimedRobot):
 
         functions.setGPos(self.grabEncoder)
 
-        self.container = RobotContainer(self.gyro)
+        #self.container = RobotContainer(self.gyro, self.leftTalon1, self.leftTalon2, self.rightTalon1, self.rightTalon2)
 
         self.traject = trajectory.TrajectoryGenerator().generateTrajectory(
             start= geo.Pose2d(geo.Translation2d(0, 0), geo.Rotation2d(0, 0)),
@@ -102,10 +101,11 @@ class Robot(wpilib.TimedRobot):
         self.kinematic = kine.DifferentialDriveKinematics(0.544)
 
     def autonomousInit(self) -> None:
+        pass
         self.timer.reset()
-        self.dt = drivetrain.Drivetrain(self.gyro)
-        self.dt.resetOdometry(geo.Pose2d(0, 0, 0))
-        self.dt.resetEncoders()
+        #self.dt = drivetrain.Drivetrain(self.gyro, self.leftTalon1, self.leftTalon2, self.rightTalon1, self.rightTalon2)
+        #self.dt.resetOdometry(geo.Pose2d(0, 0, 0))
+        #self.dt.resetEncoders()
         #"""This autonomous runs the autonomous command selected by your RobotContainer class."""
         #self.autonomousCommand = self.container.getAutonomousCommand()
 #
@@ -115,15 +115,16 @@ class Robot(wpilib.TimedRobot):
         pass
 
     def autonomousPeriodic(self) -> None:
-        t = self.timer.get()
-        self.currentPose = self.dt.getPose()
-        self.dt.periodic()
-
-        self.desiredPose = self.traject.sample(t)
-        self.output = self.ramsete.calculate(self.currentPose, self.desiredPose)
-            
-        self.wheelSpeeds = self.kinematic.toWheelSpeeds(self.output)
-        self.wheelSpeeds.desaturate(0.8)
+        pass
+        #t = self.timer.get()
+        #self.currentPose = self.dt.getPose()
+        #self.dt.periodic()
+#
+        #self.desiredPose = self.traject.sample(t)
+        #self.output = self.ramsete.calculate(self.currentPose, self.desiredPose)
+        #    
+        #self.wheelSpeeds = self.kinematic.toWheelSpeeds(self.output)
+        #self.wheelSpeeds.desaturate(0.8)
 
 
             
