@@ -16,7 +16,7 @@ def setGPos(grabEncoder):
 
 
 #
-def drive(leftTalon1, leftTalon2, rightTalon1, rightTalon2, stick, drive, slowed):
+def drive(leftTalon1, leftTalon2, rightTalon1, rightTalon2, stick, drive, slowed, led):
     b = stick.getBButtonPressed()
     if b == True:
         slowed += 1
@@ -25,12 +25,13 @@ def drive(leftTalon1, leftTalon2, rightTalon1, rightTalon2, stick, drive, slowed
         #Sameer drive if needed
         #lX = stick.getRightX() * 0.15
         lY = stick.getLeftY() * 0.2
-        led.set
+        led.set(-0.99)
     else:
         lX = stick.getLeftX() * 0.7
         #Sameer drive if needed
         #lX = stick.getRightX()
         lY = stick.getLeftY() * 0.7
+        led.set(0.99)
 
     if lX <= 1.0 and lY <= 1.0:
         drive.curvatureDrive(lX, lY, True)
