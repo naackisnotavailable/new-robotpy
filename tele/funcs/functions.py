@@ -20,16 +20,16 @@ def drive(leftTalon1, leftTalon2, rightTalon1, rightTalon2, stick, drive, slowed
     if b == True:
         slowed += 1
     if slowed % 2 == 1:
-        lX = stick.getLeftX() * 0.15
+        lX = stick.getLeftX() * 0.2
         #Sameer drive if needed
         #lX = stick.getRightX() * 0.15
-        lY = stick.getLeftY() * 0.2
+        lY = stick.getLeftY() * 0.25
         #led.set(-0.99)
     else:
-        lX = stick.getLeftX() * 0.7
+        lX = stick.getLeftX() * 0.85
         #Sameer drive if needed
         #lX = stick.getRightX()
-        lY = stick.getLeftY() * 0.7
+        lY = stick.getLeftY() * 0.85
         #led.set(0.99)
 
     if lX <= 1.0 and lY <= 1.0:
