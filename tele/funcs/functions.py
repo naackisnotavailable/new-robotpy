@@ -15,7 +15,7 @@ def setGPos(grabEncoder):
 
 
 #
-def drive(leftTalon1, leftTalon2, rightTalon1, rightTalon2, stick, drive, slowed, led):
+def drive(leftTalon1, leftTalon2, rightTalon1, rightTalon2, stick, drive, slowed):
     b = stick.getBButtonPressed()
     if b == True:
         slowed += 1
@@ -116,7 +116,7 @@ def lift(lift, liftEncoder, exPID2, stick2, a, b, lim):
             #    lift.set(exPID2.main(liftEncoder, False)
     
 def grab(grabby, grabbyEncoder, grab, grabEncoder, stick2, a, b):
-    global gPos#FUCK YOU WHAT THE HELL IS THIS CODE
+    global gPos
     if a == False and b == False:
         curr = grabby.getOutputCurrent() / 100
         if stick2.getRightY() > 0.1 :
