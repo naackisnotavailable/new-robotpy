@@ -15,7 +15,7 @@ def setGPos(grabEncoder):
 
 
 #
-def drive(leftTalon1, leftTalon2, rightTalon1, rightTalon2, stick, drive, slowed, led):
+def drive(leftTalon1, leftTalon2, rightTalon1, rightTalon2, stick, drive, slowed):
     b = stick.getBButtonPressed()
     if b == True:
         slowed += 1

@@ -72,8 +72,7 @@ class Robot(wpilib.TimedRobot):
          self.grabbyEncoder,
          self.swP,
          self.gPos,
-         self.gpi,
-         self.leds) = initialize()
+         self.gpi) = initialize()
         self.on = 0
         self.on2 = 0
         self.on3 = 0
