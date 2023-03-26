@@ -88,7 +88,7 @@ class Robot(wpilib.TimedRobot):
         self.led = wpilib.Spark(0)
         self.components = {"led": self.led}
         self.automodes = AutonomousModeSelector("autonomous", self.components)
-
+        
 
 
         functions.setGPos(self.grabEncoder)
