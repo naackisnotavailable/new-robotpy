@@ -3,6 +3,8 @@ import wpilib
 
 from wpilib.drive import DifferentialDrive
 import wpilib.drive
+#from wpilib.shuffleboard import Shuffleboard
+from robotpy_ext.autonomous import AutonomousModeSelector
 import rev
 import ntcore
 import wpilib.interfaces
@@ -82,6 +84,12 @@ class Robot(wpilib.TimedRobot):
         self.autonSwiv = swivelPA.PID()
         self.called = 0
 
+        
+        self.led = wpilib.Spark(0)
+        self.components = {"led": self.led}
+        self.automodes = AutonomousModeSelector("autonomous", self.components)
+
+
 
         functions.setGPos(self.grabEncoder)
 
@@ -99,9 +107,10 @@ class Robot(wpilib.TimedRobot):
 
         self.kinematic = kine.DifferentialDriveKinematics(0.544)
 
-    def autonomousInit(self) -> None:
-        pass
-        self.timer.reset()
+    def autonomousInit(self):
+        self.automodes.start()
+        #pass
+        #self.timer.reset()
         #self.dt = drivetrain.Drivetrain(self.gyro, self.leftTalon1, self.leftTalon2, self.rightTalon1, self.rightTalon2)
         #self.dt.resetOdometry(geo.Pose2d(0, 0, 0))
         #self.dt.resetEncoders()
@@ -110,11 +119,11 @@ class Robot(wpilib.TimedRobot):
 #
         #if self.autonomousCommand:
         #    self.autonomousCommand.schedule()
-        self.timer.start()
-        pass
+        #self.timer.start()
+        #pass
 
-    def autonomousPeriodic(self) -> None:
-        pass
+    def autonomousPeriodic(self):
+        self.automodes.periodic()
         #t = self.timer.get()
         #self.currentPose = self.dt.getPose()
         #self.dt.periodic()
@@ -126,7 +135,9 @@ class Robot(wpilib.TimedRobot):
         #self.wheelSpeeds.desaturate(0.8)
 
 
-            
+
+    def disabledInit(self):
+        self.automodes.disable()         
         
     def teleopInit(self):
         functions.setGPos(self.grabEncoder)

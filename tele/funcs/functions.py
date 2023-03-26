@@ -37,6 +37,12 @@ def drive(leftTalon1, leftTalon2, rightTalon1, rightTalon2, stick, drive, slowed
     else:
         raise Exception("safety toggle, one or more inputs > 1")
     return slowed
+
+
+
+
+
+
 def balanceCheck(l1, l2, r1, r2, stick, gyro, leftMotors, rightMotors, balancePID, spinPID):
     global on3
     
