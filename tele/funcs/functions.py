@@ -65,7 +65,7 @@ def table(stick2, table):
         table.set(-0.125)
     else:
         table.set(0.0)
-def intake(stick2, b, t, io, ioEncoder, exPID, a, c, led):
+def intake(stick2, b, t, io, ioEncoder, exPID, a, c):
     global on1
     global on2
 

@@ -73,7 +73,7 @@ class Robot(wpilib.TimedRobot):
          self.swP,
          self.gPos,
          self.gpi,
-         self.leds) = initialize()
+         self.led) = initialize()
         self.on = 0
         self.on2 = 0
         self.on3 = 0
@@ -101,7 +101,6 @@ class Robot(wpilib.TimedRobot):
         self.kinematic = kine.DifferentialDriveKinematics(0.544)
 
     def autonomousInit(self) -> None:
-        pass
         self.timer.reset()
         #self.dt = drivetrain.Drivetrain(self.gyro, self.leftTalon1, self.leftTalon2, self.rightTalon1, self.rightTalon2)
         #self.dt.resetOdometry(geo.Pose2d(0, 0, 0))
@@ -112,10 +111,11 @@ class Robot(wpilib.TimedRobot):
         #if self.autonomousCommand:
         #    self.autonomousCommand.schedule()
         self.timer.start()
-        pass
 
     def autonomousPeriodic(self) -> None:
-        pass
+        if self.timer.get() < 2.0:
+            self.leftMotors.set(-0.1)
+            self.rightMotors.set(0.1)
         #t = self.timer.get()
         #self.currentPose = self.dt.getPose()
         #self.dt.periodic()
@@ -154,7 +154,7 @@ class Robot(wpilib.TimedRobot):
         self.interrupted = functions.moveOut(self.io, self.ioEncoder, self.exPID, self.grab, self.grabEncoder, self.lift, self.liftEncoder, self.grabby, self.stick2, liftLimit)
         self.interrupted1 = functions.moveIn(self.io, self.ioEncoder, self.exPID, self.grab, self.grabEncoder, self.lift, self.liftEncoder, self.grabby, self.stick2, liftLimit)
 
-        functions.balanceCheck(self.leftTalon1, self.leftTalon2, self.rightTalon1, self.rightTalon2, self.stick, self.gyro, self.leftMotors, self.rightMotors, self.balancePID, self.spinPID)
+        functions.balanceCheck(self.leftTalon1, self.leftTalon2, self.rightTalon1, self.rightTalon2, self.stick, self.gyro, self.leftMotors, self.rightMotors, self.balancePID, self.spinPID, self.led)
         functions.lift(self.lift, self.liftEncoder, self.extendPID2, self.stick2, self.interrupted, self.interrupted1, liftLimit)
 
 
