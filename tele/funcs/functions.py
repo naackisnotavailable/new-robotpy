@@ -15,7 +15,7 @@ def setGPos(grabEncoder):
 
 
 #
-def drive(leftTalon1, leftTalon2, rightTalon1, rightTalon2, stick, drive, slowed):
+def drive(leftTalon1, leftTalon2, rightTalon1, rightTalon2, stick, drive, slowed, led):
     b = stick.getBButtonPressed()
     if b == True:
         slowed += 1
@@ -24,29 +24,32 @@ def drive(leftTalon1, leftTalon2, rightTalon1, rightTalon2, stick, drive, slowed
         #Sameer drive if needed
         #lX = stick.getRightX() * 0.15
         lY = stick.getLeftY() * 0.2
-        #led.set(-0.99)
+        #red for slow blah
+        led.set(-0.25)
     else:
         lX = stick.getLeftX() * 0.7
         #Sameer drive if needed
         #lX = stick.getRightX()
         lY = stick.getLeftY() * 0.7
-        #led.set(0.99)
+        #green for fast
+        led.set(0.75)
 
     if lX <= 1.0 and lY <= 1.0:
         drive.curvatureDrive(lX, lY, True)
     else:
         raise Exception("safety toggle, one or more inputs > 1")
     return slowed
-def balanceCheck(l1, l2, r1, r2, stick, gyro, leftMotors, rightMotors, balancePID, spinPID):
+def balanceCheck(l1, l2, r1, r2, stick, gyro, leftMotors, rightMotors, balancePID, spinPID, led):
     global on3
     
     if stick.getAButtonPressed() == True:
         on3 += 1
         print('on!')
-
+        
     if on3 % 2 == 1:
 
-
+        #rainbow for pid
+        led.set(-0.99)
         balancePID.main(gyro.getPitch(), leftMotors, rightMotors)
         print('balancing: ' + str(gyro.getPitch()))
     else:
@@ -62,7 +65,7 @@ def table(stick2, table):
         table.set(-0.125)
     else:
         table.set(0.0)
-def intake(stick2, b, t, io, ioEncoder, exPID, a, c):
+def intake(stick2, b, t, io, ioEncoder, exPID, a, c, led):
     global on1
     global on2
 
@@ -84,8 +87,11 @@ def intake(stick2, b, t, io, ioEncoder, exPID, a, c):
             on2 += 1
         if on2 % 2 == 1:
             io.set(exPID.main(ioEncoder, True))
+            #led.set(-0.23)
         else:
             io.set(exPID.main(ioEncoder, False))
+            
+
 def lift(lift, liftEncoder, exPID2, stick2, a, b, lim):
 
     if a == False and b == False:

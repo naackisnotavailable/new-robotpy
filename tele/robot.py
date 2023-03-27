@@ -141,7 +141,7 @@ class Robot(wpilib.TimedRobot):
                                       self.leftTalon2,
                                       self.rightTalon1,
                                       self.rightTalon2,
-                                      self.stick, self.myDrive, self.slowed)
+                                      self.stick, self.myDrive, self.slowed, self.led)
         
         functions.table(self.stick2, self.tableMotor)
     
