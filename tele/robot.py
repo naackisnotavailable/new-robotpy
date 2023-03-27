@@ -85,9 +85,9 @@ class Robot(wpilib.TimedRobot):
         self.called = 0
 
         
-        self.led = wpilib.Spark(0)
-        self.components = {"led": self.led}
-        self.automodes = AutonomousModeSelector("autonomous", self.components)
+        #self.led = wpilib.Spark(0)
+        #self.components = {"led": self.led}
+        #self.automodes = AutonomousModeSelector("autonomous", self.components)
         
 
 
@@ -108,8 +108,8 @@ class Robot(wpilib.TimedRobot):
         self.kinematic = kine.DifferentialDriveKinematics(0.544)
 
     def autonomousInit(self):
-        self.automodes.start()
-        #pass
+        #self.automodes.start()
+        pass
         #self.timer.reset()
         #self.dt = drivetrain.Drivetrain(self.gyro, self.leftTalon1, self.leftTalon2, self.rightTalon1, self.rightTalon2)
         #self.dt.resetOdometry(geo.Pose2d(0, 0, 0))
@@ -123,21 +123,29 @@ class Robot(wpilib.TimedRobot):
         #pass
 
     def autonomousPeriodic(self):
-        self.automodes.periodic()
+        
+        self.leftMotors.set(-0.1)
+        self.rightMotors.set(0.1)
+        
+            self.leftMotors.set(0)
+            self.rightMotors.set(0)
+
+        #self.automodes.periodic()
         #t = self.timer.get()
         #self.currentPose = self.dt.getPose()
         #self.dt.periodic()
 #
         #self.desiredPose = self.traject.sample(t)
         #self.output = self.ramsete.calculate(self.currentPose, self.desiredPose)
-        #    
+          
         #self.wheelSpeeds = self.kinematic.toWheelSpeeds(self.output)
         #self.wheelSpeeds.desaturate(0.8)
 
 
 
     def disabledInit(self):
-        self.automodes.disable()         
+        #self.automodes.disable()
+        pass         
         
     def teleopInit(self):
         functions.setGPos(self.grabEncoder)
