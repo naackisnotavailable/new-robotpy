@@ -53,7 +53,7 @@ def balanceCheck(l1, l2, r1, r2, stick, gyro, leftMotors, rightMotors, balancePI
         balancePID.main(gyro.getPitch(), leftMotors, rightMotors)
         print('balancing: ' + str(gyro.getPitch()))
     else:
-        print('off')
+        pass
 
 
 def getPose(inst):
@@ -98,17 +98,20 @@ def lift(lift, liftEncoder, exPID2, stick2, a, b, lim):
             spd = stick2.getLeftY()
             if spd < 0:
                 spd = -1*(spd**2)
+                lift.set(spd)
             elif spd > 0:
                 spd = spd**2
+                lift.set(spd)
             else:
                 spd = 0
-            if lim == True:
-                if spd > 0:
-                    lift.set(spd)
-                elif spd < 0:
-                    lift.set(0.0)
-            else:
                 lift.set(spd)
+            #if lim == True:
+            #    if spd > 0:
+            #        lift.set(spd)
+            #    elif spd < 0:
+            #        lift.set(0.0)
+            #else:
+            #    lift.set(spd)
 
             #if spd < 0:
             #    spd = -1*(spd**2)
@@ -128,11 +131,11 @@ def grab(grabby, grabbyEncoder, grab, grabEncoder, stick2, a, b):
         if stick2.getRightY() > 0.1 :
             print('closing')
             #grabby.set(.main(grabbyEncoder.getPosition(), grabby, 0.3))
-            grabby.set(0.6 - curr)#pre 0.6
+            grabby.set(0.3 - curr)#pre 0.6
         elif stick2.getRightY() < -0.1:
             print('opening')
             #grabby.set(gpi.main(grabbyEncoder.getPosition(), grabby, -2.5))
-            grabby.set(-0.3 + curr)#pre -0.3
+            grabby.set(-0.3 + curr)#pre -0.3       -0.3 + curr
 
         if abs(stick2.getRightTriggerAxis()) < 0.01 and abs(stick2.getLeftTriggerAxis()) < 0.01:
             swP.main(grabEncoder.getPosition(), grab, gPos)
@@ -143,7 +146,7 @@ def grab(grabby, grabbyEncoder, grab, grabEncoder, stick2, a, b):
                 print('down')
                 grab.set(-0.3*(stick2.getLeftTriggerAxis()**2))
             elif stick2.getRightTriggerAxis() > 0.1:
-                print('up')
+                #print('up')
                 grab.set(0.3*stick2.getRightTriggerAxis()**2)#pre .5
             else:
                 grab.set(0.0)
@@ -159,12 +162,14 @@ def moveOut(io, ioEncoder, exPID, grab, grabEncoder, lift, liftEncoder, grabby, 
         interrupted = True
 
         print('closing')
-        grabby.set(0.4 - curr)
+        grabby.set(0.3 - curr)#pre 0.4
 
         io.set(exPID.main(ioEncoder, True)) # intake moves out
         print('liftpos: ' + str(liftEncoder.getPosition()))
 
-        if liftEncoder.getPosition() > -45 and lim == False: #lift begins moving
+        if liftEncoder.getPosition() > -45 and lim == False: #lift begins moving pre -45 -70
+            
+            print('liftpos: ' + str(liftEncoder.getPosition()))
             lift.set(-0.4)
         else:
             lift.set(0.0)

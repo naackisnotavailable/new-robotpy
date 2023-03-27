@@ -113,19 +113,20 @@ class Robot(wpilib.TimedRobot):
         self.timer.start()
 
     def autonomousPeriodic(self) -> None:
-        if self.timer.get() < 2.0:
-            self.leftMotors.set(-0.1)
-            self.rightMotors.set(0.1)
-        #t = self.timer.get()
-        #self.currentPose = self.dt.getPose()
-        #self.dt.periodic()
-#
-        #self.desiredPose = self.traject.sample(t)
-        #self.output = self.ramsete.calculate(self.currentPose, self.desiredPose)
-        #    
-        #self.wheelSpeeds = self.kinematic.toWheelSpeeds(self.output)
-        #self.wheelSpeeds.desaturate(0.8)
+        if self.timer.get() < 3.6:
+            self.leftMotors.set(0.1)
+            self.rightMotors.set(-0.13)
+        
 
+        
+        #26.5 inches per second at 0.1
+        #114 inches at 3.6 sec
+        #105 inches at 3.6
+        #114
+        #116
+        #117
+        #116
+        
 
             
         
@@ -145,7 +146,7 @@ class Robot(wpilib.TimedRobot):
         
         functions.table(self.stick2, self.tableMotor)
     
-
+        #print('liftpos: ' + str(self.liftEncoder.getPosition()))
 
         functions.intake(self.stick2, self.bottomIn, self.topIn, self.io, self.ioEncoder, self.exPID, self.interrupted, self.interrupted1)
 
