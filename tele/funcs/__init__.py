@@ -53,11 +53,15 @@ def __init__():
 
 
     liftEncoder = lift.getEncoder()
+    leftEncoder = leftMotor1.getEncoder()
+    rightEncoder = rightMotor1.getEncoder()
     ntinst = ntcore._ntcore.NetworkTableInstance.getDefault()
     ioEncoder = io.getEncoder()
     ioEncoder.setPosition(0)
     liftEncoder.setPosition(0)
     grabEncoder.setPosition(0)
+    leftEncoder.setPosition(0)
+    rightEncoder.setPosition(0)
     timer = 0
     gPos = 0
     lift.restoreFactoryDefaults()
@@ -100,7 +104,9 @@ def __init__():
             swP, 
             gPos, 
             gpi,
-            led) # bro
+            led, 
+            leftEncoder, 
+            rightEncoder) # bro
 
 
 """

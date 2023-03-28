@@ -73,7 +73,9 @@ class Robot(wpilib.TimedRobot):
          self.swP,
          self.gPos,
          self.gpi,
-         self.led) = initialize()
+         self.led,
+         self.leftEncoder,
+         self.rightEncoder) = initialize()
         self.on = 0
         self.on2 = 0
         self.on3 = 0
@@ -116,7 +118,10 @@ class Robot(wpilib.TimedRobot):
         #if self.timer.get() < 3.6:
         #    self.leftMotors.set(0.1)
         #    self.rightMotors.set(-0.13)
-        functions.moveOutAuton(self.grab, self.grabEncoder, self.lift, self.liftEncoder, self.io, self.ioEncoder, self.exPID, self.autonSwiv, self.grabby)
+        #functions.moveOutAuton(self.grab, self.grabEncoder, self.lift, self.liftEncoder, self.io, self.ioEncoder, self.exPID, self.autonSwiv, self.grabby)
+        functions.moveCM(self.leftMotors, self.rightMotors, self.leftEncoder, self.rightEncoder, 20)
+        print('rightpos: ' + str(self.rightEncoder.getPosition()))
+        print('leftpos: ' + str(self.leftEncoder.getPosition()))
         
 
         
@@ -138,8 +143,10 @@ class Robot(wpilib.TimedRobot):
     def teleopPeriodic(self):
 
         liftLimit = self.lim.get()
-        print('grabpos: ' + str(self.grabEncoder.getPosition()))
-        print('liftpos: ' + str(self.liftEncoder.getPosition()))
+        #print('grabpos: ' + str(self.grabEncoder.getPosition()))
+        #print('liftpos: ' + str(self.liftEncoder.getPosition()))
+        print('rightpos: ' + str(self.rightEncoder.getPosition()))
+        print('leftpos: ' + str(self.leftEncoder.getPosition()))
         self.slowed = functions.drive(self.leftTalon1,
                                       self.leftTalon2,
                                       self.rightTalon1,
