@@ -243,20 +243,30 @@ def moveOutAuton(grab, grabEncoder, lift, liftEncoder, io, ioEncoder, exPID, aut
             else:
                 lift.set(0.0)
                 return True
+
             
 
 def moveCM(leftMotors, rightMotors, leftEncoder, rightEncoder, inches):
     ticks = inches * 0.249
     print(ticks)
     if ticks > 0:
-        if rightEncoder.getPosition() < ticks:
-            rightMotors.set(0.1)
+        if rightEncoder.getPosition() > -ticks:
+            rightMotors.set(-0.1)
         else:
             rightMotors.set(0.0)
         if leftEncoder.getPosition() < ticks:
+            leftMotors.set(0.1)
+        else:
+            leftMotors.set(0.0)
+    elif ticks < 0:
+        if rightEncoder.getPosition() < -ticks:
             rightMotors.set(0.1)
         else:
             rightMotors.set(0.0)
+        if leftEncoder.getPosition() > ticks:
+            leftMotors.set(-0.1)
+        else:
+            leftMotors.set(0.0)
     
     #if leftEncoder.getPosition() < ticks:
     #    leftMotors.set(0.1)

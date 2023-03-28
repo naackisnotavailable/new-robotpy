@@ -67,7 +67,7 @@ def __init__():
     lift.restoreFactoryDefaults()
     io.restoreFactoryDefaults()
 
-    #wpilib.CameraServer.launch()
+    wpilib.CameraServer.launch()
 
     
 

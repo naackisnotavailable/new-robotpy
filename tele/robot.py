@@ -113,15 +113,20 @@ class Robot(wpilib.TimedRobot):
         #if self.autonomousCommand:
         #    self.autonomousCommand.schedule()
         self.timer.start()
+        
 
     def autonomousPeriodic(self) -> None:
+
+        functions.moveCM(self.leftMotors, self.rightMotors, self.leftEncoder, self.rightEncoder, 50)
+        self.led.set(-0.99)
         #if self.timer.get() < 3.6:
         #    self.leftMotors.set(0.1)
         #    self.rightMotors.set(-0.13)
         #functions.moveOutAuton(self.grab, self.grabEncoder, self.lift, self.liftEncoder, self.io, self.ioEncoder, self.exPID, self.autonSwiv, self.grabby)
-        functions.moveCM(self.leftMotors, self.rightMotors, self.leftEncoder, self.rightEncoder, 20)
-        print('rightpos: ' + str(self.rightEncoder.getPosition()))
-        print('leftpos: ' + str(self.leftEncoder.getPosition()))
+        #functions.moveCM(self.leftMotors, self.rightMotors, self.leftEncoder, self.rightEncoder, -50)
+        #print('rightpos: ' + str(self.rightEncoder.getPosition()))
+        #print('leftpos: ' + str(self.leftEncoder.getPosition()))
+        
         
 
         
