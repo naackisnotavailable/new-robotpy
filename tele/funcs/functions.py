@@ -174,7 +174,7 @@ def moveOut(io, ioEncoder, exPID, grab, grabEncoder, lift, liftEncoder, grabby, 
         else:
             lift.set(0.0)
 
-        grab.set(-0.08)
+        grab.set(-0.08)  #pre -0.08
     else:
         interrupted = False
     return interrupted
@@ -216,10 +216,12 @@ def moveIn(io, ioEncoder, exPID, grab, grabEncoder, lift, liftEncoder, grabby, s
 
 
 def moveOutAuton(grab, grabEncoder, lift, liftEncoder, io, ioEncoder, exPID, autonSwiv, grabby):
-    if liftEncoder.getPosition() > -68:   #-82
+    if liftEncoder.getPosition() > -61:   #-82
         curr = grabby.getOutputCurrent() / 100
         print('liftpos: ' + str(liftEncoder.getPosition()))
         print('grabpos: ' + str(grabEncoder.getPosition()))
+        global gPos
+        gPos = grabEncoder.getPosition()
         grabby.set(0.6 - curr)  #grab cone
         #print('ioEncoder: ' + str(ioEncoder.getPosition()))
         io.set(exPID.main(ioEncoder, True))  #intake out
@@ -230,13 +232,14 @@ def moveOutAuton(grab, grabEncoder, lift, liftEncoder, io, ioEncoder, exPID, aut
         if liftEncoder.getPosition() > -60.0:  #swivel control
             grab.set(-0.125)
         else:
-            if grabEncoder.getPosition() < 17:
-                autonSwiv.main(grabEncoder.getPosition(), grab, 17)  #pre 19
+            if grabEncoder.getPosition() < 2:  #pre 17
+                autonSwiv.main(grabEncoder.getPosition(), grab, 2)  #pre 19
+                #grab.set(0.1)
             else:
                 grab.set(0.01) #pre.07
-        if grabEncoder.getPosition() > 8: #late lift control movements
-            if liftEncoder.getPosition() < -60 and liftEncoder.getPosition() > -68: #pre-80
-                lift.set(-0.25)
+        if grabEncoder.getPosition() > 2: #late lift control movements pre 8
+            if liftEncoder.getPosition() < -60 and liftEncoder.getPosition() > -61: #pre-80
+                lift.set(-0.1)
             else:
                 lift.set(0.0)
                 return True

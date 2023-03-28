@@ -57,12 +57,13 @@ def __init__():
     ioEncoder = io.getEncoder()
     ioEncoder.setPosition(0)
     liftEncoder.setPosition(0)
+    grabEncoder.setPosition(0)
     timer = 0
     gPos = 0
     lift.restoreFactoryDefaults()
     io.restoreFactoryDefaults()
 
-    wpilib.CameraServer.launch()
+    #wpilib.CameraServer.launch()
 
     
 

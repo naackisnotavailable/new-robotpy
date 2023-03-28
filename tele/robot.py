@@ -138,7 +138,8 @@ class Robot(wpilib.TimedRobot):
     def teleopPeriodic(self):
 
         liftLimit = self.lim.get()
-
+        print('grabpos: ' + str(self.grabEncoder.getPosition()))
+        print('liftpos: ' + str(self.liftEncoder.getPosition()))
         self.slowed = functions.drive(self.leftTalon1,
                                       self.leftTalon2,
                                       self.rightTalon1,
