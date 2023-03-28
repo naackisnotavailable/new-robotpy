@@ -116,15 +116,19 @@ class Robot(wpilib.TimedRobot):
         
 
     def autonomousPeriodic(self) -> None:
-
-        functions.moveCM(self.leftMotors, self.rightMotors, self.leftEncoder, self.rightEncoder, 50)
-        self.led.set(-0.99)
-        #if self.timer.get() < 3.6:
-        #    self.leftMotors.set(0.1)
-        #    self.rightMotors.set(-0.13)
+        functions.moveOutAuton(self.grab, self.grabEncoder, self.lift, self.liftEncoder, self.io,self.ioEncoder, self.exPID, self.autonSwiv, self.grabby )
+        if self.timer.get() > 6.5:
+            functions.moveCM(self.leftMotors, self.rightMotors, self.leftEncoder, self.rightEncoder, 24)
+        if self.timer.get() > 9.5:
+            curr = self.grabby.getOutputCurrent() / 100
+            self.grabby.set(-0.3 + curr) 
+        
+        #self.grab.set(0.08)
+        #self.led.set(-0.99)
+        
         #functions.moveOutAuton(self.grab, self.grabEncoder, self.lift, self.liftEncoder, self.io, self.ioEncoder, self.exPID, self.autonSwiv, self.grabby)
         #functions.moveCM(self.leftMotors, self.rightMotors, self.leftEncoder, self.rightEncoder, -50)
-        #print('rightpos: ' + str(self.rightEncoder.getPosition()))
+        print('grabPos: ' + str(self.grabEncoder.getPosition()))
         #print('leftpos: ' + str(self.leftEncoder.getPosition()))
         
         
@@ -171,6 +175,9 @@ class Robot(wpilib.TimedRobot):
 
         functions.balanceCheck(self.leftTalon1, self.leftTalon2, self.rightTalon1, self.rightTalon2, self.stick, self.gyro, self.leftMotors, self.rightMotors, self.balancePID, self.spinPID, self.led)
         functions.lift(self.lift, self.liftEncoder, self.extendPID2, self.stick2, self.interrupted, self.interrupted1, liftLimit)
+        #functions.rumble(self.liftEncoder, self.stick2)
+        #if self.liftEncoder.getPosition > -75 or self.liftEncoder.getPosition < 0:
+        #    self.stick2.setRumble(GenericHID.RumbleType.kRightRumble, 1)
 
 
 if __name__ == "__main__":

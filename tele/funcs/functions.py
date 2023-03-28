@@ -20,14 +20,14 @@ def drive(leftTalon1, leftTalon2, rightTalon1, rightTalon2, stick, drive, slowed
     if b == True:
         slowed += 1
     if slowed % 2 == 1:
-        lX = stick.getLeftX() * 0.15
+        lX = stick.getLeftX() * 0.3
         #Sameer drive if needed
         #lX = stick.getRightX() * 0.15
         lY = stick.getLeftY() * 0.2
         #red for slow blah
         led.set(-0.25)
     else:
-        lX = stick.getLeftX() * 0.7
+        lX = stick.getLeftX() * 0.3 #pre 0.7
         #Sameer drive if needed
         #lX = stick.getRightX()
         lY = stick.getLeftY() * 0.7
@@ -149,7 +149,7 @@ def grab(grabby, grabbyEncoder, grab, grabEncoder, stick2, a, b):
                 #print('up')
                 grab.set(0.3*stick2.getRightTriggerAxis()**2)#pre .5
             else:
-                grab.set(0.0)
+                grab.set(0.01)
             gPos = grabEncoder.getPosition()
 
 
@@ -178,6 +178,12 @@ def moveOut(io, ioEncoder, exPID, grab, grabEncoder, lift, liftEncoder, grabby, 
     else:
         interrupted = False
     return interrupted
+
+
+#def rumble(liftEncoder, stick2):
+#    if liftEncoder.getPosition > -75 or liftEncoder.getPosition < 0:
+#        stick2.setRumble(RumbleType.kRightRumble, 1.0)
+
 
 def moveIn(io, ioEncoder, exPID, grab, grabEncoder, lift, liftEncoder, grabby, stick2, lim):
     global gPos
@@ -232,9 +238,9 @@ def moveOutAuton(grab, grabEncoder, lift, liftEncoder, io, ioEncoder, exPID, aut
         if liftEncoder.getPosition() > -60.0:  #swivel control
             grab.set(-0.125)
         else:
-            if grabEncoder.getPosition() < 2:  #pre 17
-                autonSwiv.main(grabEncoder.getPosition(), grab, 2)  #pre 19
-                #grab.set(0.1)
+            if grabEncoder.getPosition() < 15:  #pre 17
+                #autonSwiv.main(grabEncoder.getPosition(), grab, 2)  #pre 19
+                grab.set(0.06)
             else:
                 grab.set(0.01) #pre.07
         if grabEncoder.getPosition() > 2: #late lift control movements pre 8
@@ -251,28 +257,19 @@ def moveCM(leftMotors, rightMotors, leftEncoder, rightEncoder, inches):
     print(ticks)
     if ticks > 0:
         if rightEncoder.getPosition() > -ticks:
-            rightMotors.set(-0.1)
+            rightMotors.set(-0.05)
         else:
             rightMotors.set(0.0)
         if leftEncoder.getPosition() < ticks:
-            leftMotors.set(0.1)
+            leftMotors.set(0.05)
         else:
             leftMotors.set(0.0)
     elif ticks < 0:
         if rightEncoder.getPosition() < -ticks:
-            rightMotors.set(0.1)
+            rightMotors.set(0.05)
         else:
             rightMotors.set(0.0)
         if leftEncoder.getPosition() > ticks:
-            leftMotors.set(-0.1)
+            leftMotors.set(-0.05)
         else:
             leftMotors.set(0.0)
-    
-    #if leftEncoder.getPosition() < ticks:
-    #    leftMotors.set(0.1)
-    #elif leftEncoder.getPosition() > ticks:
-    #    leftMotors.set(-0.1)
-    #else:
-    #    leftMotors.set(0.0)
-    #if rightEncoder.getPosition() >ticks:
-    #    rightMotors.set(-0.1)

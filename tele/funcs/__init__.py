@@ -34,6 +34,7 @@ def __init__():
     swP = swivelP.PID()
     stick = wpilib.XboxController(0)
     stick2 = wpilib.XboxController(1)
+    #stick2 = wpilib.GenericHID(1)
     myDrive = wpilib.drive.DifferentialDrive(leftMotors, rightMotors)
     myDrive.setDeadband(0.03)
 
