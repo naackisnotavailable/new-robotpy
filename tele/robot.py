@@ -116,20 +116,15 @@ class Robot(wpilib.TimedRobot):
         
 
     def autonomousPeriodic(self) -> None:
-        functions.moveOutAuton(self.grab, self.grabEncoder, self.lift, self.liftEncoder, self.io,self.ioEncoder, self.exPID, self.autonSwiv, self.grabby )
-        if self.timer.get() > 6.5:
-            functions.moveCM(self.leftMotors, self.rightMotors, self.leftEncoder, self.rightEncoder, 24)
-        if self.timer.get() > 9.5:
-            curr = self.grabby.getOutputCurrent() / 100
-            self.grabby.set(-0.3 + curr) 
+        pass
+        #functions.moveOutAuton(self.grab, self.grabEncoder, self.lift, self.liftEncoder, self.io,self.ioEncoder, self.exPID, self.autonSwiv, self.grabby )
+        #if self.timer.get() > 6.5:
+        #    functions.moveCM(self.leftMotors, self.rightMotors, self.leftEncoder, self.rightEncoder, 24)
+        #if self.timer.get() > 9.5:
+        #    curr = self.grabby.getOutputCurrent() / 100
+        #    self.grabby.set(-0.3 + curr) 
         
-        #self.grab.set(0.08)
-        #self.led.set(-0.99)
         
-        #functions.moveOutAuton(self.grab, self.grabEncoder, self.lift, self.liftEncoder, self.io, self.ioEncoder, self.exPID, self.autonSwiv, self.grabby)
-        #functions.moveCM(self.leftMotors, self.rightMotors, self.leftEncoder, self.rightEncoder, -50)
-        print('grabPos: ' + str(self.grabEncoder.getPosition()))
-        #print('leftpos: ' + str(self.leftEncoder.getPosition()))
         
         
 

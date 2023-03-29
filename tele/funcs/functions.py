@@ -27,7 +27,7 @@ def drive(leftTalon1, leftTalon2, rightTalon1, rightTalon2, stick, drive, slowed
         #red for slow blah
         led.set(-0.25)
     else:
-        lX = stick.getLeftX() * 0.3 #pre 0.7
+        lX = stick.getLeftX() * 0.5 #pre 0.7
         #Sameer drive if needed
         #lX = stick.getRightX()
         lY = stick.getLeftY() * 0.7
