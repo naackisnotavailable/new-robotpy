@@ -174,7 +174,7 @@ def moveOut(io, ioEncoder, exPID, grab, grabEncoder, lift, liftEncoder, grabby, 
         else:
             lift.set(0.0)
 
-        grab.set(-0.08)  #pre -0.08
+        grab.set(-0.06)  #pre -0.08
     else:
         interrupted = False
     return interrupted
@@ -207,7 +207,7 @@ def moveIn(io, ioEncoder, exPID, grab, grabEncoder, lift, liftEncoder, grabby, s
 
         if grabEncoder.getPosition() < -1:
             print('running t2')
-
+            grab.set(0.01)
             if liftEncoder.getPosition() < -5: #lift begins moving
                 print('running t3')
                 lift.set(0.4)
