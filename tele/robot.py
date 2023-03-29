@@ -119,9 +119,17 @@ class Robot(wpilib.TimedRobot):
         
 
     def autonomousPeriodic(self) -> None:
+        #Auton 0 = move out long side, set facing node  against nodes, 160 inches does not place curves towards 30 side
+        #auton 1 = place and move out, set facing node 24 inches from node legs, moves out 85 inches, short side
+
+
+        
+        
+        
+        
         auton = 1
         if auton == 0:
-            functions.moveCM(self.leftMotors, self.rightMotors, self.leftEncoder, self.rightEncoder, -160, 0.1)
+            functions.moveCM(self.leftMotors, self.rightMotors, self.leftEncoder, self.rightEncoder, -160, 0.1)# -84 for shortside 0 for middle and -160 for long side
         elif auton == 1:
             functions.moveOutAuton(self.grab, self.grabEncoder, self.lift, self.liftEncoder, self.io,self.ioEncoder, self.exPID, self.autonSwiv, self.grabby )
             if self.timer.get() > 6.5 and self.timer.get() < 8.7:
@@ -131,7 +139,7 @@ class Robot(wpilib.TimedRobot):
                 self.grabby.set(-0.07) 
                 #NEGATIVE IS OPEN
             if self.timer.get() > 9.2:
-                functions.moveCM(self.leftMotors, self.rightMotors, self.leftEncoder, self.rightEncoder, -84, 0.2)
+                functions.moveCM(self.leftMotors, self.rightMotors, self.leftEncoder, self.rightEncoder, 0, 0.2) # -84 for shortside 0 for middle and -160 for long side
                 #self.grabby.set(-0.07) 
         #elif auton == 2:
         #    if self.timer.get() < 6:
