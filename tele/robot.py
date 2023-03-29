@@ -1,6 +1,6 @@
 # auton go back 29 and then forward to 20 to place
 import wpilib
-
+#import wpilib.GenericHID.RumbleType;
 from wpilib.drive import DifferentialDrive
 import wpilib.drive
 import rev
@@ -102,6 +102,9 @@ class Robot(wpilib.TimedRobot):
 
         self.kinematic = kine.DifferentialDriveKinematics(0.544)
 
+
+        
+
     def autonomousInit(self) -> None:
         self.timer.reset()
         #self.dt = drivetrain.Drivetrain(self.gyro, self.leftTalon1, self.leftTalon2, self.rightTalon1, self.rightTalon2)
@@ -116,13 +119,22 @@ class Robot(wpilib.TimedRobot):
         
 
     def autonomousPeriodic(self) -> None:
-        functions.moveCM(self.leftMotors, self.rightMotors, self.leftEncoder, self.rightEncoder, -160)
-        #functions.moveOutAuton(self.grab, self.grabEncoder, self.lift, self.liftEncoder, self.io,self.ioEncoder, self.exPID, self.autonSwiv, self.grabby )
-        #if self.timer.get() > 6.5:
-        #    functions.moveCM(self.leftMotors, self.rightMotors, self.leftEncoder, self.rightEncoder, 24)
-        #if self.timer.get() > 9.5:
-        #    curr = self.grabby.getOutputCurrent() / 100
-        #    self.grabby.set(-0.3 + curr) 
+        auton = 1
+        if auton == 0:
+            functions.moveCM(self.leftMotors, self.rightMotors, self.leftEncoder, self.rightEncoder, -160, 0.1)
+        elif auton == 1:
+            functions.moveOutAuton(self.grab, self.grabEncoder, self.lift, self.liftEncoder, self.io,self.ioEncoder, self.exPID, self.autonSwiv, self.grabby )
+            if self.timer.get() > 6.5:
+                functions.moveCM(self.leftMotors, self.rightMotors, self.leftEncoder, self.rightEncoder, 24, 0.1)
+            if self.timer.get() > 10:
+                #self.grab.set(0.09)
+                self.grabby.set(-0.05) 
+                #NEGATIVE IS OPEN
+            if self.timer.get() > 10.5:
+                functions.moveCM(self.leftMotors, self.rightMotors, self.leftEncoder, self.rightEncoder, -72, 0.2)
+        elif auton == 2:
+            functions.moveCM(self.leftMotors, self.rightMotors, self.leftEncoder, self.rightEncoder, -72, 0.1)
+        
         
         
         
@@ -160,6 +172,7 @@ class Robot(wpilib.TimedRobot):
         functions.table(self.stick2, self.tableMotor)
     
         #print('liftpos: ' + str(self.liftEncoder.getPosition()))
+        functions.shelfHeight(self.lift, self.liftEncoder, self.stick2, self.led)
 
         functions.intake(self.stick2, self.bottomIn, self.topIn, self.io, self.ioEncoder, self.exPID, self.interrupted, self.interrupted1)
 

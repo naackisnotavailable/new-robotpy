@@ -168,7 +168,7 @@ def moveOut(io, ioEncoder, exPID, grab, grabEncoder, lift, liftEncoder, grabby, 
         io.set(exPID.main(ioEncoder, True)) # intake moves out
         print('liftpos: ' + str(liftEncoder.getPosition()))
 
-        if liftEncoder.getPosition() > -45 and lim == False: #lift begins moving pre -45 -70
+        if liftEncoder.getPosition() > -45: #lift begins moving pre -45 -70
             
             print('liftpos: ' + str(liftEncoder.getPosition()))
             lift.set(-0.4)
@@ -209,7 +209,7 @@ def moveIn(io, ioEncoder, exPID, grab, grabEncoder, lift, liftEncoder, grabby, s
         if grabEncoder.getPosition() < -1:
             print('running t2')
 
-            if liftEncoder.getPosition() < -5 and lim == False: #lift begins moving
+            if liftEncoder.getPosition() < -5: #lift begins moving
                 print('running t3')
                 lift.set(0.4)
             else:
@@ -219,6 +219,12 @@ def moveIn(io, ioEncoder, exPID, grab, grabEncoder, lift, liftEncoder, grabby, s
     else:
         interrupted = False
     return interrupted
+
+def shelfHeight(lift, liftEncoder, stick2, led):
+    if stick2.getRawAxis(1):
+        led.set(0.17)
+        if liftEncoder.getPosition() > -75:
+            lift.set(-0.4)
 
 
 def moveOutAuton(grab, grabEncoder, lift, liftEncoder, io, ioEncoder, exPID, autonSwiv, grabby):
@@ -240,7 +246,7 @@ def moveOutAuton(grab, grabEncoder, lift, liftEncoder, io, ioEncoder, exPID, aut
         else:
             if grabEncoder.getPosition() < 15:  #pre 17
                 #autonSwiv.main(grabEncoder.getPosition(), grab, 2)  #pre 19
-                grab.set(0.06)
+                grab.set(0.07)
             else:
                 grab.set(0.01) #pre.07
         if grabEncoder.getPosition() > 2: #late lift control movements pre 8
@@ -252,24 +258,25 @@ def moveOutAuton(grab, grabEncoder, lift, liftEncoder, io, ioEncoder, exPID, aut
 
             
 
-def moveCM(leftMotors, rightMotors, leftEncoder, rightEncoder, inches):
+def moveCM(leftMotors, rightMotors, leftEncoder, rightEncoder, inches, speed):
     ticks = inches * 0.249
+    
     print(ticks)
     if ticks > 0:
         if rightEncoder.getPosition() > -ticks:
-            rightMotors.set(-0.1)
+            rightMotors.set(speed * -1.08)
         else:
             rightMotors.set(0.0)
         if leftEncoder.getPosition() < ticks:
-            leftMotors.set(0.1)
+            leftMotors.set(speed * 1)
         else:
             leftMotors.set(0.0)
     elif ticks < 0:
         if rightEncoder.getPosition() < -ticks:
-            rightMotors.set(0.1)
+            rightMotors.set(speed * 1.08)
         else:
             rightMotors.set(0.0)
         if leftEncoder.getPosition() > ticks:
-            leftMotors.set(-0.1)
+            leftMotors.set(speed * -1)
         else:
             leftMotors.set(0.0)
