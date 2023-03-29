@@ -124,16 +124,20 @@ class Robot(wpilib.TimedRobot):
             functions.moveCM(self.leftMotors, self.rightMotors, self.leftEncoder, self.rightEncoder, -160, 0.1)
         elif auton == 1:
             functions.moveOutAuton(self.grab, self.grabEncoder, self.lift, self.liftEncoder, self.io,self.ioEncoder, self.exPID, self.autonSwiv, self.grabby )
-            if self.timer.get() > 6.5:
+            if self.timer.get() > 6.5 and self.timer.get() < 8.7:
                 functions.moveCM(self.leftMotors, self.rightMotors, self.leftEncoder, self.rightEncoder, 24, 0.1)
-            if self.timer.get() > 9.5:
+            if self.timer.get() > 7.8:
                 #self.grab.set(0.09)
-                self.grabby.set(-0.05) 
+                self.grabby.set(-0.07) 
                 #NEGATIVE IS OPEN
-            if self.timer.get() > 10:
-                functions.moveCM(self.leftMotors, self.rightMotors, self.leftEncoder, self.rightEncoder, -72, 0.2)
-        elif auton == 2:
-            functions.moveCM(self.leftMotors, self.rightMotors, self.leftEncoder, self.rightEncoder, -72, 0.1)
+            if self.timer.get() > 9.2:
+                functions.moveCM(self.leftMotors, self.rightMotors, self.leftEncoder, self.rightEncoder, -84, 0.2)
+                #self.grabby.set(-0.07) 
+        #elif auton == 2:
+        #    if self.timer.get() < 6:
+        #        functions.moveCM(self.leftMotors, self.rightMotors, self.leftEncoder, self.rightEncoder, 24, 0.1)
+        #    if self.timer.get() > 6:
+        #        functions.moveCM(self.leftMotors, self.rightMotors, self.leftEncoder, self.rightEncoder, -84, 0.2)
         
         
         
