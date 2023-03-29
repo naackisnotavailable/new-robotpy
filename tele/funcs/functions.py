@@ -234,7 +234,7 @@ def moveOutAuton(grab, grabEncoder, lift, liftEncoder, io, ioEncoder, exPID, aut
         print('grabpos: ' + str(grabEncoder.getPosition()))
         global gPos
         gPos = grabEncoder.getPosition()
-        grabby.set(0.6 - curr)  #grab cone
+        grabby.set(0.1)  #grab cube
         #print('ioEncoder: ' + str(ioEncoder.getPosition()))
         io.set(exPID.main(ioEncoder, True))  #intake out
         if liftEncoder.getPosition() > -60: #lift start going up
@@ -244,7 +244,7 @@ def moveOutAuton(grab, grabEncoder, lift, liftEncoder, io, ioEncoder, exPID, aut
         if liftEncoder.getPosition() > -60.0:  #swivel control
             grab.set(-0.125)
         else:
-            if grabEncoder.getPosition() < 15:  #pre 17
+            if grabEncoder.getPosition() < 12:  #pre 15
                 #autonSwiv.main(grabEncoder.getPosition(), grab, 2)  #pre 19
                 grab.set(0.07)
             else:
