@@ -116,7 +116,7 @@ class Robot(wpilib.TimedRobot):
         
 
     def autonomousPeriodic(self) -> None:
-        pass
+        functions.moveCM(self.leftMotors, self.rightMotors, self.leftEncoder, self.rightEncoder, -160)
         #functions.moveOutAuton(self.grab, self.grabEncoder, self.lift, self.liftEncoder, self.io,self.ioEncoder, self.exPID, self.autonSwiv, self.grabby )
         #if self.timer.get() > 6.5:
         #    functions.moveCM(self.leftMotors, self.rightMotors, self.leftEncoder, self.rightEncoder, 24)

@@ -128,10 +128,11 @@ def grab(grabby, grabbyEncoder, grab, grabEncoder, stick2, a, b):
     global gPos
     if a == False and b == False:
         curr = grabby.getOutputCurrent() / 100
+        print(curr)
         if stick2.getRightY() > 0.1 :
             print('closing')
             #grabby.set(.main(grabbyEncoder.getPosition(), grabby, 0.3))
-            grabby.set(0.3 - curr)#pre 0.6
+            grabby.set(0.35 - curr)#pre 0.6
         elif stick2.getRightY() < -0.1:
             print('opening')
             #grabby.set(gpi.main(grabbyEncoder.getPosition(), grabby, -2.5))
@@ -162,7 +163,7 @@ def moveOut(io, ioEncoder, exPID, grab, grabEncoder, lift, liftEncoder, grabby, 
         interrupted = True
 
         print('closing')
-        grabby.set(0.3 - curr)#pre 0.4
+        grabby.set(0.55 - curr)#pre 0.4
 
         io.set(exPID.main(ioEncoder, True)) # intake moves out
         print('liftpos: ' + str(liftEncoder.getPosition()))
@@ -178,7 +179,6 @@ def moveOut(io, ioEncoder, exPID, grab, grabEncoder, lift, liftEncoder, grabby, 
     else:
         interrupted = False
     return interrupted
-
 
 #def rumble(liftEncoder, stick2):
 #    if liftEncoder.getPosition > -75 or liftEncoder.getPosition < 0:
@@ -257,19 +257,19 @@ def moveCM(leftMotors, rightMotors, leftEncoder, rightEncoder, inches):
     print(ticks)
     if ticks > 0:
         if rightEncoder.getPosition() > -ticks:
-            rightMotors.set(-0.05)
+            rightMotors.set(-0.1)
         else:
             rightMotors.set(0.0)
         if leftEncoder.getPosition() < ticks:
-            leftMotors.set(0.05)
+            leftMotors.set(0.1)
         else:
             leftMotors.set(0.0)
     elif ticks < 0:
         if rightEncoder.getPosition() < -ticks:
-            rightMotors.set(0.05)
+            rightMotors.set(0.1)
         else:
             rightMotors.set(0.0)
         if leftEncoder.getPosition() > ticks:
-            leftMotors.set(-0.05)
+            leftMotors.set(-0.1)
         else:
             leftMotors.set(0.0)
