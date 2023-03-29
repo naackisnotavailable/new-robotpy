@@ -164,9 +164,9 @@ class Robot(wpilib.TimedRobot):
 
         liftLimit = self.lim.get()
         #print('grabpos: ' + str(self.grabEncoder.getPosition()))
-        #print('liftpos: ' + str(self.liftEncoder.getPosition()))
-        print('rightpos: ' + str(self.rightEncoder.getPosition()))
-        print('leftpos: ' + str(self.leftEncoder.getPosition()))
+        print('liftpos: ' + str(self.liftEncoder.getPosition()))
+        #print('rightpos: ' + str(self.rightEncoder.getPosition()))
+        #print('leftpos: ' + str(self.leftEncoder.getPosition()))
         self.slowed = functions.drive(self.leftTalon1,
                                       self.leftTalon2,
                                       self.rightTalon1,
@@ -176,7 +176,7 @@ class Robot(wpilib.TimedRobot):
         functions.table(self.stick2, self.tableMotor)
     
         #print('liftpos: ' + str(self.liftEncoder.getPosition()))
-        functions.shelfHeight(self.lift, self.liftEncoder, self.stick2, self.led)
+        #functions.shelfHeight(self.lift, self.liftEncoder, self.stick2, self.led)
 
         functions.intake(self.stick2, self.bottomIn, self.topIn, self.io, self.ioEncoder, self.exPID, self.interrupted, self.interrupted1)
 

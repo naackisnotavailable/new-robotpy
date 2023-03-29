@@ -87,7 +87,6 @@ def intake(stick2, b, t, io, ioEncoder, exPID, a, c):
             on2 += 1
         if on2 % 2 == 1:
             io.set(exPID.main(ioEncoder, True))
-            #led.set(-0.23)
         else:
             io.set(exPID.main(ioEncoder, False))
             
@@ -168,7 +167,7 @@ def moveOut(io, ioEncoder, exPID, grab, grabEncoder, lift, liftEncoder, grabby, 
         io.set(exPID.main(ioEncoder, True)) # intake moves out
         print('liftpos: ' + str(liftEncoder.getPosition()))
 
-        if liftEncoder.getPosition() > -45: #lift begins moving pre -45 -70
+        if liftEncoder.getPosition() > -78: #lift begins moving pre -45 -70
             
             print('liftpos: ' + str(liftEncoder.getPosition()))
             lift.set(-0.4)
@@ -220,11 +219,11 @@ def moveIn(io, ioEncoder, exPID, grab, grabEncoder, lift, liftEncoder, grabby, s
         interrupted = False
     return interrupted
 
-def shelfHeight(lift, liftEncoder, stick2, led):
-    if stick2.getRawAxis(1):
-        led.set(0.17)
-        if liftEncoder.getPosition() > -75:
-            lift.set(-0.4)
+#def shelfHeight(lift, liftEncoder, stick2, led):
+#    if stick2.getRawAxis(1):
+#        led.set(0.17)
+#        if liftEncoder.getPosition() > -75:
+#            lift.set(-0.4)
 
 
 def moveOutAuton(grab, grabEncoder, lift, liftEncoder, io, ioEncoder, exPID, autonSwiv, grabby):
