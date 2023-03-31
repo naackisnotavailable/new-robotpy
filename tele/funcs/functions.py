@@ -207,12 +207,13 @@ def moveIn(io, ioEncoder, exPID, grab, grabEncoder, lift, liftEncoder, grabby, s
 
         if grabEncoder.getPosition() < -1:
             print('running t2')
-            grab.set(0.01)
+            grab.set(-0.04)
             if liftEncoder.getPosition() < -5: #lift begins moving
                 print('running t3')
                 lift.set(0.4)
             else:
                 lift.set(0.0)
+                grabby.set(-0.07)
         else:
             lift.set(0.0)
     else:
@@ -263,7 +264,7 @@ def moveCM(leftMotors, rightMotors, leftEncoder, rightEncoder, inches, speed):
     print(ticks)
     if ticks > 0:
         if rightEncoder.getPosition() > -ticks:
-            rightMotors.set(speed * -1.08)
+            rightMotors.set(speed * -1.12)
         else:
             rightMotors.set(0.0)
         if leftEncoder.getPosition() < ticks:
@@ -272,10 +273,33 @@ def moveCM(leftMotors, rightMotors, leftEncoder, rightEncoder, inches, speed):
             leftMotors.set(0.0)
     elif ticks < 0:
         if rightEncoder.getPosition() < -ticks:
-            rightMotors.set(speed * 1.08)
+            rightMotors.set(speed * 1.35)#25 pre
         else:
             rightMotors.set(0.0)
         if leftEncoder.getPosition() > ticks:
             leftMotors.set(speed * -1)
+        else:
+            leftMotors.set(0.0)
+
+def moveCM55(leftMotors, rightMotors, leftEncoder, rightEncoder, inches, speed):
+    ticks = inches * 0.249
+    
+    print(ticks)
+    if ticks > 0:
+        if rightEncoder.getPosition() > -ticks:
+            rightMotors.set(speed * -1)
+        else:
+            rightMotors.set(0.0)
+        if leftEncoder.getPosition() < ticks:
+            leftMotors.set(speed * 1.02)
+        else:
+            leftMotors.set(0.0)
+    elif ticks < 0:
+        if rightEncoder.getPosition() < -ticks:
+            rightMotors.set(speed * 1)
+        else:
+            rightMotors.set(0.0)
+        if leftEncoder.getPosition() > ticks:
+            leftMotors.set(speed * -1.02)
         else:
             leftMotors.set(0.0)

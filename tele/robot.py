@@ -116,6 +116,11 @@ class Robot(wpilib.TimedRobot):
         #if self.autonomousCommand:
         #    self.autonomousCommand.schedule()
         self.timer.start()
+        self.ioEncoder.setPosition(0)
+        self.liftEncoder.setPosition(0)
+        self.grabEncoder.setPosition(0)
+        self.leftEncoder.setPosition(0)
+        self.rightEncoder.setPosition(0)
         
 
     def autonomousPeriodic(self) -> None:
@@ -127,20 +132,32 @@ class Robot(wpilib.TimedRobot):
         
         
         
-        auton = 1
+        auton = 3
         if auton == 0:
-            functions.moveCM(self.leftMotors, self.rightMotors, self.leftEncoder, self.rightEncoder, -160, 0.1)# -84 for shortside 0 for middle and -160 for long side
+            functions.moveCM(self.leftMotors, self.rightMotors, self.leftEncoder, self.rightEncoder, -84, 0.1)# -84 for shortside 0 for middle and -160 for long side
         elif auton == 1:
             functions.moveOutAuton(self.grab, self.grabEncoder, self.lift, self.liftEncoder, self.io,self.ioEncoder, self.exPID, self.autonSwiv, self.grabby )
             if self.timer.get() > 6.5 and self.timer.get() < 8.7:
-                functions.moveCM(self.leftMotors, self.rightMotors, self.leftEncoder, self.rightEncoder, 24, 0.1)
-            if self.timer.get() > 7.8:
+                functions.moveCM(self.leftMotors, self.rightMotors, self.leftEncoder, self.rightEncoder, 22, 0.1)
+            if self.timer.get() > 7.4:
                 #self.grab.set(0.09)
                 self.grabby.set(-0.07) 
                 #NEGATIVE IS OPEN
             if self.timer.get() > 9.2:
-                functions.moveCM(self.leftMotors, self.rightMotors, self.leftEncoder, self.rightEncoder, 0, 0.2) # -84 for shortside 0 for middle and -160 for long side
+                functions.moveCM(self.leftMotors, self.rightMotors, self.leftEncoder, self.rightEncoder, -84, 0.2) # -84 for shortside 0 for middle and -160 for long side
                 #self.grabby.set(-0.07) 
+        elif auton == 2:
+            functions.moveOutAuton(self.grab, self.grabEncoder, self.lift, self.liftEncoder, self.io,self.ioEncoder, self.exPID, self.autonSwiv, self.grabby )
+            if self.timer.get() > 6.5 and self.timer.get() < 8.7:
+                functions.moveCM55(self.leftMotors, self.rightMotors, self.leftEncoder, self.rightEncoder, 24, 0.1)
+            if self.timer.get() > 7.4:
+                #self.grab.set(0.09)
+                self.grabby.set(-0.07) 
+                #NEGATIVE IS OPEN
+            if self.timer.get() > 9.2:
+                functions.moveCM55(self.leftMotors, self.rightMotors, self.leftEncoder, self.rightEncoder, -84, 0.2) # -84 for shortside 0 for middle and -160 for long side
+        elif auton == 3:
+            functions.moveCM55(self.leftMotors, self.rightMotors, self.leftEncoder, self.rightEncoder, -84, 0.1)# -84 for shortside 0 for middle and -160 for long side
         #elif auton == 2:
         #    if self.timer.get() < 6:
         #        functions.moveCM(self.leftMotors, self.rightMotors, self.leftEncoder, self.rightEncoder, 24, 0.1)

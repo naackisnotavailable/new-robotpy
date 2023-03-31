@@ -7,9 +7,9 @@ class PID(object):
     def main(self, gyro_pitch, left_motors, right_motors):
 
         #working version
-        Kp = 0.20  #tuning
-        Ki = 0.10  #tuning
-        Kd = 0.05 #tuning
+        Kp = 0.10  #tuning
+        Ki = 0.0  #tuning
+        Kd = 0.0 #tuning
 
        
         
